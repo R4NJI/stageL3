@@ -1,0 +1,32 @@
+.monmenu {
+    .menu {
+        text-decoration: none;
+        color: white;
+        font-weight:500;
+    }
+    
+    .menuactive {
+        text-decoration: none;
+        color: black;
+        font-weight:500;
+    }
+    
+    #jiramalabel {
+        font-weight: bold;
+        color:#F2742B;
+        font-size: 40px;
+        text-shadow: 	-1px -1px 0 #ffffff,  
+                            1px -1px 0 #fff,
+                        -1px 1px 0 #fff,
+                        1px 1px 0 #fff;
+    }
+    
+    .icon {
+        cursor: 
+        pointer;
+    }
+    
+    .header {
+        box-shadow: 0 0 4px 0 rgba(128, 128, 128, 0.75);
+    }
+}
