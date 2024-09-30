@@ -4,51 +4,57 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import './Menu.css';
 
 import photo from './images/photo.jpg';
+import mef from './images/mef.jpg';
+import ic_finance from './images/icon_finance.svg';
+import ic_home from './images/icon_home.svg';
 
 function Menu() {
     const location = useLocation();
 
     const scroll = {
-        maxHeight:'700px',
-        overflowY:'auto',
-        backgroundColor:'#EFF0F3',
+        backgroundColor:'rgb(247,247,247)',
+        height:'100%'
     }
 
     return (
         <div className="d-flex flex-row monmenu" style={{height:'100vh'}}>
-            <div className="col-2" style={{backgroundColor:'#0FABE8'}}>
-                <div className="d-flex justify-content-center  align-items-center">
-                    <div style={{paddingRight:'10px'}}>
-                        
+            <div style={{backgroundColor:'rgb(255,87,51)',width:'20vw'}}>
+                <div className="d-flex pt-4 ps-2 justify-content-start align-items-center">
+                    <div style={{border:'1px solid white',borderRadius:'50%'}}>
+                        <img alt="icon finance" src={ic_finance}/>    
                     </div>
-                    <div id="jiramalabel">
-                        JIRAMA
+                    <div id="jiramalabel" className="ms-2">
+                        MEF/DGI
                     </div>
                 </div>
+
+                <div style={{textAlign:'center'}} className="mt-4">
+                    <img alt="icon mef" src={mef} style={{height:'150px',width:'220px'}}/> 
+                </div>
                     
-                <div className="d-flex flex-column p-4" style={{fontSize:'25px'}}>
-                    <div  className="d-flex" >
-                        <div>
-                           
+                <div className="d-flex flex-column mt-4" style={{fontSize:'25px'}}>
+                    <div className={location.pathname==='/' ? "menuactive p-3" : "menu p-3"} >
+                        <div className="me-2">
+                           <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/menu" className={location.pathname==='/menu' ? "menuactive" : "menu"}>Espace client</Link>    
-                        </div>
-                    </div>
-                    <div className="d-flex">
-                        <div>
-                           
-                        </div>
-                        <div>
-                            <Link to="/menu/releve" className={location.pathname==='/menu/releve' ? "menuactive" : "menu"}>Relevé</Link>
+                            <Link to="/menu" className="menuitem">RECETTE</Link>    
                         </div>
                     </div>
-                    <div className="d-flex">
-                        <div>
-                            
+                    <div className={location.pathname==='/recette2' ? "menuactive p-3" : "menu p-3"} >
+                        <div className="me-2">
+                           <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/menu/paiement" className={location.pathname==='/menu/paiement' ? "menuactive" : "menu"}>Paiement</Link>
+                            <Link to="/menu" className="menuitem">RECETTE 2</Link>    
+                        </div>
+                    </div>
+                    <div className={location.pathname==='/recette3' ? "menuactive p-3" : "menu p-3"} >
+                        <div className="me-2">
+                           <img alt="icon savings" src={ic_home}/>
+                        </div>
+                        <div>
+                            <Link to="/menu" className="menuitem">RECETTE 3</Link>    
                         </div>
                     </div>
                 </div>
@@ -56,7 +62,7 @@ function Menu() {
                      
             </div>
 
-            <div className="col-10 d-flex flex-column">
+            <div className="d-flex flex-column" style={{width:'80vw'}}>
                 <div className="d-flex justify-content-end p-1 align-items-center header" >
                     <div style={{paddingRight:'20px'}}>Toavina</div>
                     <div><img alt="" src={photo} style={{height:'50px',width:'50px',borderRadius:'25px'}}/></div>
