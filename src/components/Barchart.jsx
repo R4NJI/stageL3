@@ -2,14 +2,9 @@ import ViewBarChart from "./ViewBarChart";
 
 function Barchart() {
 
-    const mycss = {
-        color:'rgb(120,137,145)',
-        fontFamily:'Inter'
-    }
-
     return (
         <div>
-            <div className="d-flex flex-column p-3" style={mycss}>
+            <div className="d-flex flex-column p-3">
                 <div style={{fontSize:'25px'}}>Tableau de Bord</div>
 
                 <div className="d-flex flex-column p-2 mt-3" style={{fontSize:'20px',backgroundColor:'white'}}>
@@ -96,7 +91,7 @@ function Barchart() {
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex mt-3">
+                    <div className="d-flex mt-3 justify-content-around" style={{width:'100%'}}>
                         <div className="d-flex flex-column" id="realisation">
                             <div>Réalisation cumulée</div>
                             <div style={{fontSize:'15px'}}>(Janvier au Mai 2017)</div>
@@ -106,8 +101,12 @@ function Barchart() {
                             <div className="mt-2">135 015 072</div>
     
                         </div>
-                        <div id="barchart">
+                        <div id="barchart" className="d-flex justify-content-center" >
                             <ViewBarChart/> 
+                        </div>
+                        <div className="d-flex flex-column">
+                            <div>Rang</div>
+                            <div>2ème</div>
                         </div>
                     </div>
                    

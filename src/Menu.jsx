@@ -13,7 +13,9 @@ function Menu() {
 
     const scroll = {
         backgroundColor:'rgb(247,247,247)',
-        height:'100%'
+        height:'100%',
+        color:'rgb(120,137,145)',
+        fontFamily:'Inter'
     }
 
     return (
@@ -38,15 +40,15 @@ function Menu() {
                            <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/menu" className="menuitem">RECETTE</Link>    
+                            <Link to="/" className="menuitem">RECETTE</Link>    
                         </div>
                     </div>
-                    <div className={location.pathname==='/recette2' ? "menuactive p-3" : "menu p-3"} >
+                    <div className={location.pathname==='/piechart' ? "menuactive p-3" : "menu p-3"} >
                         <div className="me-2">
                            <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/menu" className="menuitem">RECETTE 2</Link>    
+                            <Link to="/piechart" className="menuitem">RECETTE 2</Link>    
                         </div>
                     </div>
                     <div className={location.pathname==='/recette3' ? "menuactive p-3" : "menu p-3"} >
@@ -54,7 +56,7 @@ function Menu() {
                            <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/menu" className="menuitem">RECETTE 3</Link>    
+                            <Link to="/linechart" className="menuitem">RECETTE 3</Link>    
                         </div>
                     </div>
                 </div>

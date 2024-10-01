@@ -4,11 +4,13 @@
         color: white;
         display: flex;
         align-items: center;
+        cursor: pointer;
     }
     
     .menuitem {
         text-decoration: none;
         color: white;
+       
     }
     
     .menuactive {
@@ -17,6 +19,7 @@
         background-color: rgb(32,177,170);
         display: flex;
         align-items: center;
+        cursor: pointer;
     }
     
     #jiramalabel {
