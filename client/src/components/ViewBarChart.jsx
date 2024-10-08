@@ -1,5 +1,5 @@
 // src/components/ViewBarChart.js
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -14,10 +14,36 @@ import {
 // Enregistrer les composants nécessaires de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ViewBarChart = () => {
+const ViewBarChart = ({ moisDebut, moisFin , recetteparmoisenv }) => {
+  const mois0 = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+  ];
+
+  const [mois,setMois] = useState([]);
+  const [recetteparmois,setRecetteparmois] = useState([]);
+
+  useEffect(() => {
+    // Convertir moisDebut et moisFin en nombres
+    const debut = parseInt(moisDebut, 10); 
+    const fin = parseInt(moisFin, 10);
+    let mois1=[]
+
+    // Vérifier si les valeurs sont valides
+    if (!isNaN(debut) && !isNaN(fin) && debut >= 1 && fin <= 12 && debut <= fin) {
+      for (let index = debut - 1; index < fin; index++) {
+        mois1.push(mois0[index]); // Ajouter les mois dans le tableau
+      }
+      setMois(mois1);
+      console.log("Mois sélectionnés : ", mois1); // Affiche les mois sélectionnés
+    } else {
+      console.error("Valeurs de moisDebut ou moisFin incorrectes");
+    }
+  }, [moisDebut, moisFin]);
+
   // Données du graphique
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    labels: mois,
     datasets: [
       {
         label: 'Dataset 1',

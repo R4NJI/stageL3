@@ -1,6 +1,73 @@
+import { useContext, useEffect, useState } from "react";
 import ViewBarChart from "./ViewBarChart";
 
+import { DataContext } from '../DataProvider';
+import axios from 'axios';
+
 function Barchart() {
+    const mois0 = [
+        "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
+        "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+      ];
+
+
+
+    const { assujettis , centre_fiscal, centre_gestionnaire, central_recette} = useContext(DataContext);
+
+   //objet à envoyer
+   const [data, setData] = useState({
+        annee:"2010",
+        moisDebut:"1",
+        moisFin:"12",
+        centre:"Tous",
+        nature:"Tous"
+    });
+
+    //variable pour stocker la recette totale cumulée du mois
+    const [cumule,setCumule] = useState(0);
+
+    //variable pour stocker la recette de chaque mois
+    const [recetteParMois,setRecetteParMois] = useState([])
+
+    const handleOnChange = (e) => {
+        const { name, value } = e.target;
+      
+        setData(last => {
+          let newData = { ...last, [name]: value }; 
+      
+          // Si moisFin est mis à jour et est inférieur à moisDebut, forcer moisDebut à suivre moisFin
+          if (name === "moisFin" && parseInt(value, 10) < parseInt(last.moisDebut, 10)) {
+            newData.moisDebut = value;
+          }
+      
+          return newData;
+        });
+    };
+
+    //Paramétrer le moisDebut en fonction de moisFin
+    useEffect(() => {
+        axios.post('http://localhost:3001/api/recettes', data)
+        .then(response => {
+          console.log('Résultats filtrés : ', response.data);
+          if (response.data.somme_totale == null) 
+            setCumule(0)
+          else
+            setCumule(response.data.somme_totale);
+
+            console.log('Cumule : ', cumule);
+        })
+        .catch(error => {
+          console.error('Erreur lors du filtre : ', error);
+        });
+    }, [data]);
+
+
+    //mois1
+    const [mois1,setMois1] = useState([]);
+    useEffect(()=> {
+        const moisFinInt = parseInt(data.moisFin, 10); 
+        setMois1(mois0.slice(0, moisFinInt)); 
+    },[data.moisFin]);
 
     return (
         <div>
@@ -21,14 +88,31 @@ function Barchart() {
                                 </div>
                                 <div className="d-flex flex-column">
                                     <div>
-                                        <select className="form-select" name="annee" id="annee">
+                                        {/* /<input value={data.annee} onChange={handleOnChange} className="form-control" type="number" min="2010" max="2023" name="annee" id="annee" /> */}
+                                        <select className="form-select" value={data.annee} onChange={handleOnChange} name="annee" id="annee">
+                                            <option value="2010">2010</option>
+                                            <option value="2011">2011</option>
+                                            <option value="2012">2012</option>
+                                            <option value="2013">2013</option>
+                                            <option value="2014">2014</option>
+                                            <option value="2015">2015</option>
+                                            <option value="2016">2016</option>
                                             <option value="2017">2017</option>
                                             <option value="2018">2018</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
                                         </select>
                                     </div>
                                     <div className="mt-3">
-                                        <select className="form-select" name="centre" id="centre">
-                                            <option value="CF ALASORA">CF ALASORA</option>
+                                        <select className="form-select" name="centre" id="centre" value={data.centre} onChange={handleOnChange}>
+                                            <option key="0" value="Tous">--Tous--</option>
+                                            {centre_gestionnaire?.map((cg,index)=> (
+                                                <option key={index} value={cg.id_centre_gest}>{cg.cg_abbrev}</option>
+                                            ))
+                                            }
                                         </select>
                                     </div>
                                 </div>
@@ -41,8 +125,28 @@ function Barchart() {
                                 </div>
                                 <div className="d-flex flex-column">
                                     <div>
-                                        <select className="form-select" name="moisDebut" id="moisDebut">
-                                            <option value="">Tous les mois</option>
+                                        <select className="form-select" name="moisDebut" id="moisDebut" value={data.moisDebut} onChange={handleOnChange}> 
+                                            {
+                                                mois1.map((lemois1,index)=>(
+                                                    <option value={parseInt(index,10)+1}>{lemois1}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                    <div className="mt-3">
+                                        <select className="form-select" name="nature" id="nature" onChange={handleOnChange}>
+                                            <option value="Tous">--Tous--</option>
+                                            { assujettis?.map((assujetti,index) => (
+                                                <option key={index} value={assujetti.code}> {assujetti.abrev} </option>
+                                            ) ) }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="d-flex">
+                                <div className="me-4"><label htmlFor="moisFin">au :</label></div>
+                                <div>
+                                        <select className="form-select" name="moisFin" id="moisFin" value={data.moisFin} onChange={handleOnChange}>
                                             <option value="1">Janvier</option>
                                             <option value="2">Février</option>
                                             <option value="3">Mars</option>
@@ -56,37 +160,8 @@ function Barchart() {
                                             <option value="11">Novembre</option>
                                             <option value="12">Décembre</option>
                                         </select>
-                                    </div>
-                                    <div className="mt-3">
-                                        <select className="form-select" name="nature" id="nature">
-                                            <option value="IR">IR</option>
-                                            <option value="IS">IS</option>
-                                            <option value="IRSA">IRSA</option>
-                                            <option value="TVA">TVA</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="d-flex">
-                            
-                                <div className="me-4"><label htmlFor="moisFin">au :</label></div>
-                            
-                                <div>
-                                    <select className="form-select" name="moisFin" id="moisFin">
-                                        <option value="">Tous les mois</option>
-                                        <option value="1">Janvier</option>
-                                        <option value="2">Février</option>
-                                        <option value="3">Mars</option>
-                                        <option value="4">Avril</option>
-                                        <option value="5">Mai</option>
-                                        <option value="6">Juin</option>
-                                        <option value="7">Juillet</option>
-                                        <option value="8">Août</option>
-                                        <option value="9">Septembre</option>
-                                        <option value="10">Octobre</option>
-                                        <option value="11">Novembre</option>
-                                        <option value="12">Décembre</option>
-                                    </select>
+                              
+                                 
                                 </div>
                             </div>
                         </div>
@@ -94,15 +169,18 @@ function Barchart() {
                     <div className="d-flex mt-3 justify-content-around" style={{width:'100%'}}>
                         <div className="d-flex flex-column" id="realisation">
                             <div>Réalisation cumulée</div>
-                            <div style={{fontSize:'15px'}}>(Janvier au Mai 2017)</div>
-                            <div className="mt-2">135 015 072</div>
+                            <div style={{fontSize:'15px'}}>
+                            ({data.moisDebut === data.moisFin 
+                                ? mois0[parseInt(data.moisDebut, 10) - 1]
+                                : `${mois0[parseInt(data.moisDebut, 10) - 1]} au ${mois0[parseInt(data.moisFin, 10) - 1]}`} {data.annee})
+                            </div>
+                            <div className="mt-2"></div>
                             <div className="mt-2">Réalisation du mois</div>
                             <div style={{fontSize:'15px'}}>(Mai 2017)</div>
-                            <div className="mt-2">135 015 072</div>
-    
+                            <div className="mt-2">{cumule}</div>
                         </div>
                         <div id="barchart" className="d-flex justify-content-center" >
-                            <ViewBarChart/> 
+                            <ViewBarChart moisDebut={data.moisDebut} moisFin={data.moisFin}/> 
                         </div>
                         <div className="d-flex flex-column">
                             <div>Rang</div>

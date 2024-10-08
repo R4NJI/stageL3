@@ -5,10 +5,11 @@ import Barchart from "./components/Barchart";
 import Piechart from "./components/Piechart";
 import Linechart from "./components/Linechart";
 
+import { DataProvider } from './DataProvider'; 
 
 function App() {
   return (
-
+    <DataProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Menu />}>
@@ -18,6 +19,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+    </DataProvider>
 
   );
 }
