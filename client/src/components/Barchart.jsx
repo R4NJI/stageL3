@@ -10,9 +10,7 @@ function Barchart() {
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
       ];
 
-
-
-    const { assujettis , centre_fiscal, centre_gestionnaire, central_recette} = useContext(DataContext);
+    const { assujettis , centre_gestionnaire} = useContext(DataContext);
 
    //objet à envoyer
    const [data, setData] = useState({
@@ -26,8 +24,20 @@ function Barchart() {
     //variable pour stocker la recette totale cumulée du mois
     const [cumule,setCumule] = useState(0);
 
+    //variable pour stocker la recette totale cumulée depuis janvier
+    const [janvCumule,setJanvCumule] = useState(0);
+
     //variable pour stocker la recette de chaque mois
     const [recetteParMois,setRecetteParMois] = useState([])
+
+    //variable pour stocker la prévision de chaque mois
+    const [prevParMois,setPrevParMois] = useState([])
+
+    //variable pour stocker le rang du cg
+    const [rang,setRang] = useState([])
+
+    //variable pour stocker la prévision totale
+    const [somme_prevision,setSomme_totale] = useState([])
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
@@ -48,13 +58,13 @@ function Barchart() {
     useEffect(() => {
         axios.post('http://localhost:3001/api/recettes', data)
         .then(response => {
-          console.log('Résultats filtrés : ', response.data);
-          if (response.data.somme_totale == null) 
-            setCumule(0)
-          else
+          console.log('Résultats recues de lapi recettes : ', response.data);
             setCumule(response.data.somme_totale);
-
-            console.log('Cumule : ', cumule);
+            setRecetteParMois(response.data.recettes_par_mois);
+            setPrevParMois(response.data.prevision);
+            setJanvCumule(response.data.somme_cumule);
+            setRang(response.data.rang_data);
+            setSomme_totale(response.data.somme_prevision);
         })
         .catch(error => {
           console.error('Erreur lors du filtre : ', error);
@@ -137,7 +147,7 @@ function Barchart() {
                                         <select className="form-select" name="nature" id="nature" onChange={handleOnChange}>
                                             <option value="Tous">--Tous--</option>
                                             { assujettis?.map((assujetti,index) => (
-                                                <option key={index} value={assujetti.code}> {assujetti.abrev} </option>
+                                                <option key={index} value={assujetti.num_imp}> {assujetti.abrev} </option>
                                             ) ) }
                                         </select>
                                     </div>
@@ -170,21 +180,28 @@ function Barchart() {
                         <div className="d-flex flex-column" id="realisation">
                             <div>Réalisation cumulée</div>
                             <div style={{fontSize:'15px'}}>
+                                ({data.moisDebut == 1
+                                    ? `Janvier` 
+                                    :  `Janvier au ${mois0[parseInt(data.moisDebut, 10) - 1]}`                               
+                                })
+                            </div>
+                            <div className="mt-2">{janvCumule}</div>
+                            <div className="mt-2">Réalisation du mois</div>
+                            <div style={{fontSize:'15px'}}>
                             ({data.moisDebut === data.moisFin 
                                 ? mois0[parseInt(data.moisDebut, 10) - 1]
                                 : `${mois0[parseInt(data.moisDebut, 10) - 1]} au ${mois0[parseInt(data.moisFin, 10) - 1]}`} {data.annee})
                             </div>
-                            <div className="mt-2"></div>
-                            <div className="mt-2">Réalisation du mois</div>
-                            <div style={{fontSize:'15px'}}>(Mai 2017)</div>
                             <div className="mt-2">{cumule}</div>
                         </div>
-                        <div id="barchart" className="d-flex justify-content-center" >
-                            <ViewBarChart moisDebut={data.moisDebut} moisFin={data.moisFin}/> 
+                        <div id="barchart" className="d-flex justify-content-center" style={{width:'50%'}}>
+                            <ViewBarChart moisDebut={data.moisDebut} moisFin={data.moisFin} recetteParMoisEnv={recetteParMois} prevParMoisEnv={prevParMois}/> 
                         </div>
                         <div className="d-flex flex-column">
-                            <div>Rang</div>
-                            <div>2ème</div>
+                            <div>Rang du centre</div>
+                            <div className="mb-3">{rang.find(r => r.code_bureau === data.centre)?.rang || 'Non trouvé'}</div>
+                            <div>Excedent</div>
+                            <div>{cumule-somme_prevision}</div>
                         </div>
                     </div>
                    
