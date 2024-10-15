@@ -94,6 +94,22 @@ app.post('/api/recettes', (req, res) => {
     ORDER BY 
       annee, mois`;
 
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+      
+      
   // Requête pour obtenir la recette cumule
   let recetteCumule = `
     SELECT SUM(tot_ver) AS somme_cumule
@@ -105,7 +121,7 @@ app.post('/api/recettes', (req, res) => {
   let cumuleParams = [annee, moisDebut]; // Les paramètres de la requête de prévision
 
   if (centre && centre !== 'Tous') {
-    recetteCumule += ` AND code_bureau = $4`;
+    recetteCumule += ` AND code_bureau = $3`;
     cumuleParams.push(centre);
   }
 
@@ -184,11 +200,11 @@ app.post('/api/recettes', (req, res) => {
     SELECT SUM(prevision) AS prevision_totale
     FROM "NIFONLINE"."PREVISION"
     WHERE 
-      annee_prev = $1 AND
-      mois_prev::integer BETWEEN $2 AND $3
+      annee_prev = $1
+      AND mois_prev::integer BETWEEN $2 AND $3
   `
 
-  let previsionTotaleParams = [annee, moisDebut, moisFin];
+  let previsionTotaleParams = [annee,moisDebut, moisFin];
 
   if (centre && centre !== 'Tous') {
     previsionTotale += ` AND code_bureau = $4`;
@@ -201,6 +217,7 @@ app.post('/api/recettes', (req, res) => {
     previsionTotaleParams.push(nature);
   }
 
+
   // Logs pour diagnostiquer
   console.log('Params:', params);
   console.log('SQL Query for Recette Totale:', recetteTotale);
@@ -211,23 +228,23 @@ app.post('/api/recettes', (req, res) => {
   console.log('Rang Params:', rangParams);
   console.log('SQL Query for rang:', rangSql);
   console.log('Prevision totale parms:', previsionTotale);
-  console.log('SQL Query for previsionTotale:', previsionParams);
+  console.log('SQL Query for previsionTotale:', previsionTotaleParams);
 
   // Exécution des requêtes SQL de manière parallèle avec Promise.all
   Promise.all([
     db.query(recetteTotale, params),
     db.query(recetteParMois, params),
-    db.query(previsionMois, previsionParams),
     db.query(recetteCumule, cumuleParams),
+    db.query(previsionMois, previsionParams),
     db.query(rangSql, rangParams),
-    db.query(previsionTotale,previsionParams)
+    db.query(previsionTotale,previsionTotaleParams)
   ])
-  .then(([totaleResult, parMoisResult, parMoisResultPrev, cumuleResult, rangResult,prevTotalResult]) => {
+  .then(([totaleResult, parMoisResult,cumuleResult, parMoisResultPrev , rangResult,prevTotalResult]) => {
     res.json({
       somme_totale: totaleResult.rows[0]?.somme_totale || 0,
       recettes_par_mois: parMoisResult.rows,
-      prevision: parMoisResultPrev.rows,
       somme_cumule: cumuleResult.rows[0]?.somme_cumule || 0,
+      prevision: parMoisResultPrev.rows,
       rang_data: rangResult.rows,
       somme_prevision : prevTotalResult.rows[0]?.prevision_totale || 0
     });

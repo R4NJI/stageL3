@@ -115,9 +115,9 @@ const ViewBarChart = ({ moisDebut, moisFin , recetteParMoisEnv, prevParMoisEnv }
       y: {
         beginAtZero: true, // Début de l'axe Y à 0
         min: 0, // Valeur minimale de l'axe Y
-        max: 9000000, // Valeur maximale de l'axe Y (ajuster selon tes données)
+        max: 10000000, // Valeur maximale de l'axe Y (ajuster selon tes données)
         ticks: {
-          stepSize: 100, // Intervalle entre les graduations de l'axe Y
+          stepSize: 1000, // Intervalle entre les graduations de l'axe Y
         },
       },
     },

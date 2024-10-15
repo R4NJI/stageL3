@@ -51,7 +51,7 @@ function Menu() {
                             <Link to="/piechart" className="menuitem">RECETTE 2</Link>    
                         </div>
                     </div>
-                    <div className={location.pathname==='/recette3' ? "menuactive p-3" : "menu p-3"} >
+                    <div className={location.pathname==='/linechart' ? "menuactive p-3" : "menu p-3"} >
                         <div className="me-2">
                            <img alt="icon savings" src={ic_home}/>
                         </div>

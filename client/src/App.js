@@ -4,8 +4,10 @@ import Menu from "./Menu";
 import Barchart from "./components/Barchart";
 import Piechart from "./components/Piechart";
 import Linechart from "./components/Linechart";
+import Graph from "./components/Graph";
 
 import { DataProvider } from './DataProvider'; 
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -13,9 +15,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Menu />}>
-            <Route index element={<Barchart />} />
-            <Route path='/piechart' element={<Piechart />} />
-            <Route path='/linechart' element={<Linechart />} />
+            <Route index element={<Dashboard />} />
+            <Route path='/piechart' element={<Dashboard />} />
+            <Route path='/linechart' element={<Dashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>

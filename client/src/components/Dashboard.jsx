@@ -3,8 +3,18 @@ import ViewBarChart from "./ViewBarChart";
 
 import { DataContext } from '../DataProvider';
 import axios from 'axios';
+import Realisation from "./Realisation";
+import { useLocation } from "react-router-dom";
+import Piechart from "./Piechart";
 
-function Barchart() {
+function Dashboard() {
+    const scroll = {
+        maxHeight:'580px',
+        overflowY:'auto'
+    }
+
+    const location = useLocation();
+
     const mois0 = [
         "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
@@ -81,7 +91,7 @@ function Barchart() {
     },[data.moisFin]);
 
     return (
-        <div>
+        <div style={scroll}>
             <div className="d-flex flex-column p-3">
                 <div style={{fontSize:'25px'}}>Tableau de Bord</div>
 
@@ -177,39 +187,24 @@ function Barchart() {
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex mt-3 justify-content-around" style={{width:'100%'}}>
-                        <div className="d-flex flex-column" id="realisation">
-                            <div>Réalisation cumulée</div>
-                            <div style={{fontSize:'15px'}}>
-                                ({data.moisDebut == 1
-                                    ? `Janvier` 
-                                    :  `Janvier au ${mois0[parseInt(data.moisDebut, 10) - 1]}`                               
-                                } {data.annee})
-                            </div>
-                            <div className="mt-2">{janvCumule}</div>
-                            <div className="mt-2">Réalisation du mois</div>
-                            <div style={{fontSize:'15px'}}>
-                            ({data.moisDebut === data.moisFin 
-                                ? mois0[parseInt(data.moisDebut, 10) - 1]
-                                : `${mois0[parseInt(data.moisDebut, 10) - 1]} au ${mois0[parseInt(data.moisFin, 10) - 1]}`} {data.annee})
-                            </div>
-                            <div className="mt-2">{cumule}</div>
-                        </div>
-                        <div id="barchart" className="d-flex justify-content-center" style={{width:'50%'}}>
-                            <ViewBarChart moisDebut={data.moisDebut} moisFin={data.moisFin} recetteParMoisEnv={recetteParMois} prevParMoisEnv={prevParMois}/> 
-                        </div>
-                        <div className="d-flex flex-column">
-                            <div>Rang du centre</div>
-                            <div className="mb-3">{rang.find(r => r.code_bureau === data.centre)?.rang || 'Non trouvé'}</div>
-                            <div>Excedent</div>
-                            <div>{cumule-somme_prevision}</div>
-                        </div>
+                    <div>
+                        { location.pathname==="/piechart" ?
+                            <Piechart/>
+                            :
+                            <Realisation 
+                            data={data} 
+                            janvCumule={janvCumule} 
+                            cumule={cumule} rang={rang} 
+                            prevParMois={prevParMois} 
+                            recetteParMois={recetteParMois} 
+                            somme_prevision={somme_prevision} 
+                            />
+                        }
                     </div>
-                   
                 </div>
             </div>
         </div>
     )
 }
 
-export default Barchart;
+export default Dashboard;
