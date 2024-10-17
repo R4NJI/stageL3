@@ -37,7 +37,7 @@ app.get('/api/central_recette', (req, res) => {
 
 app.get('/api/centre_gestionnaire', (req, res) => {
   const sql = `SELECT * FROM "NIFONLINE"."CENTRE_GESTIONNAIRE"
-                ORDER BY id_centre_gest ASC `;
+                ORDER BY code_bureau ASC `;
   db.query(sql, (err, result ) => {
     if (err) return res.json({Message: "Erreur pour récupérer les centres gestionnaires"});
     else return res.json(result);
@@ -94,22 +94,6 @@ app.post('/api/recettes', (req, res) => {
     ORDER BY 
       annee, mois`;
 
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-      
-      
   // Requête pour obtenir la recette cumule
   let recetteCumule = `
     SELECT SUM(tot_ver) AS somme_cumule
@@ -187,7 +171,7 @@ app.post('/api/recettes', (req, res) => {
     rangParams.push(nature);
   }
 
-  rangSql += `GROUP BY 
+  rangSql += ` GROUP BY 
     EXTRACT(YEAR FROM daty), 
     code_bureau
   ORDER BY 
@@ -204,31 +188,86 @@ app.post('/api/recettes', (req, res) => {
       AND mois_prev::integer BETWEEN $2 AND $3
   `
 
+  //recette par nature
+  let recetteParNature = `
+  SELECT
+    EXTRACT(YEAR FROM cr.daty) AS annee, 
+    a.num_imp,a.abrev, 
+    SUM(cr.tot_ver) AS total_ver
+  FROM "NIFONLINE"."ASSUJETTIS" as a
+  RIGHT JOIN "NIFONLINE"."CENTRAL_RECETTE" as cr
+  ON a.num_imp = cr.num_imp
+  WHERE EXTRACT(YEAR FROM cr.daty) = $1
+  AND EXTRACT(MONTH FROM cr.daty) BETWEEN $2 AND $3
+  `
+
+  //recette par bureau
+  let recetteParBureau = `
+  SELECT
+  EXTRACT(YEAR FROM cr.daty) AS annee, 
+    cg.code_bureau,cg.cg_abbrev, 
+    SUM(cr.tot_ver) AS total_ver
+  FROM "NIFONLINE"."CENTRE_GESTIONNAIRE" as cg
+  LEFT JOIN "NIFONLINE"."CENTRAL_RECETTE" as cr
+  ON cg.code_bureau = cr.code_bureau
+  WHERE EXTRACT(YEAR FROM cr.daty) = $1
+  AND EXTRACT(MONTH FROM cr.daty) BETWEEN $2 AND $3
+  `
+
   let previsionTotaleParams = [annee,moisDebut, moisFin];
+  let recetteParNatureParams = [annee,moisDebut, moisFin];
+  let recetteParBureauParams = [annee,moisDebut, moisFin];
 
   if (centre && centre !== 'Tous') {
     previsionTotale += ` AND code_bureau = $4`;
+    recetteParNature += ` AND cr.code_bureau = $4`;
     previsionTotaleParams.push(centre);
+    recetteParNatureParams.push(centre);
   }
 
   if (nature && nature !== 'Tous') {
     const paramIndex = previsionTotaleParams.length + 1;
     previsionTotale += ` AND num_imp::integer = $${paramIndex}`;
     previsionTotaleParams.push(nature);
+    
+    const paramIndex2 = recetteParBureauParams.length + 1;
+    recetteParBureau += ` AND cr.num_imp::integer = $${paramIndex2}`;
+    recetteParBureauParams.push(nature);
+
   }
 
+  recetteParNature += ` GROUP BY 
+      EXTRACT(YEAR FROM cr.daty), 
+      a.num_imp, 
+      a.abrev
+    ORDER BY 
+      annee, a.num_imp;
+  `
+
+  recetteParBureau += ` GROUP BY 
+  EXTRACT(YEAR FROM cr.daty), 
+    cg.code_bureau, 
+    cg.cg_abbrev
+  ORDER BY 
+      annee, cg.code_bureau;
+  `
 
   // Logs pour diagnostiquer
-  console.log('Params:', params);
-  console.log('SQL Query for Recette Totale:', recetteTotale);
-  console.log('SQL Query for Recette Par Mois:', recetteParMois);
-  console.log('SQL Query for Prevision Mois:', previsionMois);
-  console.log('Cumule Params:', cumuleParams);
-  console.log('SQL Query for Recette cumule:', recetteCumule);
-  console.log('Rang Params:', rangParams);
-  console.log('SQL Query for rang:', rangSql);
-  console.log('Prevision totale parms:', previsionTotale);
-  console.log('SQL Query for previsionTotale:', previsionTotaleParams);
+  // console.log('Params:', params);
+  // console.log('SQL Query for Recette Totale:', recetteTotale);
+  // console.log('SQL Query for Recette Par Mois:', recetteParMois);
+  // console.log('SQL Query for Prevision Mois:', previsionMois);
+  // console.log('Cumule Params:', cumuleParams);
+  // console.log('SQL Query for Recette cumule:', recetteCumule);
+  // console.log('Rang Params:', rangParams);
+  // console.log('SQL Query for rang:', rangSql);
+  // console.log('Prevision totale params:', previsionTotale);
+  // console.log('SQL Query for previsionTotale:', previsionTotaleParams);
+  // console.log('SQL Query for recetteParNature:', recetteParNature);
+  // console.log('Recette par nature params:', recetteParNatureParams);
+  // console.log('SQL Query for recetteParBureau:', recetteParBureau);
+  // console.log('Recette par bureau params:', recetteParBureauParams);
+
 
   // Exécution des requêtes SQL de manière parallèle avec Promise.all
   Promise.all([
@@ -237,16 +276,20 @@ app.post('/api/recettes', (req, res) => {
     db.query(recetteCumule, cumuleParams),
     db.query(previsionMois, previsionParams),
     db.query(rangSql, rangParams),
-    db.query(previsionTotale,previsionTotaleParams)
+    db.query(previsionTotale,previsionTotaleParams),
+    db.query(recetteParNature,recetteParNatureParams),
+    db.query(recetteParBureau,recetteParBureauParams)
   ])
-  .then(([totaleResult, parMoisResult,cumuleResult, parMoisResultPrev , rangResult,prevTotalResult]) => {
+  .then(([totaleResult, parMoisResult,cumuleResult, parMoisResultPrev , rangResult,prevTotalResult, recetteParNatureResult, recetteParBureauResult]) => {
     res.json({
       somme_totale: totaleResult.rows[0]?.somme_totale || 0,
       recettes_par_mois: parMoisResult.rows,
       somme_cumule: cumuleResult.rows[0]?.somme_cumule || 0,
       prevision: parMoisResultPrev.rows,
       rang_data: rangResult.rows,
-      somme_prevision : prevTotalResult.rows[0]?.prevision_totale || 0
+      somme_prevision : prevTotalResult.rows[0]?.prevision_totale || 0,
+      recettes_par_nature: recetteParNatureResult.rows,
+      recettes_par_bureau : recetteParBureauResult.rows
     });
   })
   .catch(err => {

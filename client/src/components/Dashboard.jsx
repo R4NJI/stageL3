@@ -49,6 +49,12 @@ function Dashboard() {
     //variable pour stocker la prévision totale
     const [somme_prevision,setSomme_totale] = useState([])
 
+    //variable pour stocker les recettes par mois
+    const [recetteParNature,setRecetteParNature] = useState([])
+
+    //variable pour stocker les recettes par bureau
+    const [recetteParBureau,setRecetteParBureau] = useState([])
+
     const handleOnChange = (e) => {
         const { name, value } = e.target;
       
@@ -76,6 +82,8 @@ function Dashboard() {
             setJanvCumule(response.data.somme_cumule);
             setRang(response.data.rang_data);
             setSomme_totale(response.data.somme_prevision);
+            setRecetteParNature(response.data.recettes_par_nature);
+            setRecetteParBureau(response.data.recettes_par_bureau);
         })
         .catch(error => {
           console.error('Erreur lors du filtre : ', error);
@@ -131,7 +139,7 @@ function Dashboard() {
                                         <select className="form-select" name="centre" id="centre" value={data.centre} onChange={handleOnChange}>
                                             <option key="0" value="Tous">--Tous--</option>
                                             {centre_gestionnaire?.map((cg,index)=> (
-                                                <option key={index} value={cg.id_centre_gest}>{cg.cg_abbrev}</option>
+                                                <option key={index} value={cg.code_bureau}>{cg.cg_abbrev}</option>
                                             ))
                                             }
                                         </select>
@@ -189,7 +197,7 @@ function Dashboard() {
                     </div>
                     <div>
                         { location.pathname==="/piechart" ?
-                            <Piechart/>
+                            <Piechart recetteParNature={recetteParNature} recetteParBureau={recetteParBureau}/>
                             :
                             <Realisation 
                             data={data} 

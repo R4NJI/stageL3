@@ -4,47 +4,58 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function Piecentre(params) {
-    const data = {
-        labels: ['Rouge', 'Bleu', 'Jaune', 'Vert', 'Violet', 'Orange'],
-        datasets: [
-          {
-            label: 'Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ],
-            borderWidth: 1,
-          },
-        ],
-      };
-    
-      const options = {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            enabled: true,
-          },
-        },
-      };
+function Piecentre({ recetteParBureau }) {
+  let bureau = recetteParBureau.map(item => item.cg_abbrev);
+  let recettes = recetteParBureau.map(item => item.total_ver);
 
-      return <Pie data={data} options={options}/>
+  // Fonction pour générer un tableau de couleurs alternées
+  const generateColors = (length, colors) => {
+    let result = [];
+    for (let i = 0; i < length; i++) {
+      result.push(colors[i % colors.length]);
+    }
+    return result;
+  };
+
+  // Ajout de couleurs supplémentaires
+  const colors = [
+    'rgba(32,177,170, 2)',  // Turquoise
+    'rgb(255,87,51)',       // Orange
+    'rgba(128,0,128, 1)',   // Violet
+    'rgba(128,128,128, 1)', // Gris
+    'rgba(0,128,128, 1)',   // Bleu sarcelle
+    'rgba(255,165,0, 1)',   // Orange fort
+    'rgba(255,0,255, 1)',   // Magenta
+    'rgba(75,0,130, 1)'     // Indigo
+  ];
+
+  const data = {
+    labels: bureau,
+    datasets: [
+      {
+        label: 'Recettes',
+        data: recettes,
+        backgroundColor: generateColors(bureau.length, colors), // Génère des couleurs alternées
+        borderColor: generateColors(bureau.length, colors), // Génère des bordures alternées
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+  };
+
+  return <Pie data={data} options={options} />;
 }
 
 export default Piecentre;
