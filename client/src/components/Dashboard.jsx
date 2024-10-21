@@ -49,6 +49,9 @@ function Dashboard() {
     //variable pour stocker la prévision totale
     const [somme_prevision,setSomme_totale] = useState([])
 
+    //variable pour stocker la prévision totale
+    const [previsionCumule,setPrevisionCumule] = useState([])
+
     //variable pour stocker les recettes par mois
     const [recetteParNature,setRecetteParNature] = useState([])
 
@@ -82,6 +85,7 @@ function Dashboard() {
             setJanvCumule(response.data.somme_cumule);
             setRang(response.data.rang_data);
             setSomme_totale(response.data.somme_prevision);
+            setPrevisionCumule(response.data.prevision_cumule);
             setRecetteParNature(response.data.recettes_par_nature);
             setRecetteParBureau(response.data.recettes_par_bureau);
         })
@@ -206,6 +210,8 @@ function Dashboard() {
                             prevParMois={prevParMois} 
                             recetteParMois={recetteParMois} 
                             somme_prevision={somme_prevision} 
+                            previsionCumule={previsionCumule}
+                            centre_gestionnaire={centre_gestionnaire}
                             />
                         }
                     </div>

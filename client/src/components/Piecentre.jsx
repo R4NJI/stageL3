@@ -53,6 +53,7 @@ function Piecentre({ recetteParBureau }) {
         enabled: true,
       },
     },
+  
   };
 
   return <Pie data={data} options={options} />;

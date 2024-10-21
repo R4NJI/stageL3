@@ -68,6 +68,7 @@ function Pienature({recetteParNature}) {
             enabled: true,
           },
         },
+        
       };
 
       return (

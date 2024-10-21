@@ -110,15 +110,12 @@ const ViewBarChart = ({ moisDebut, moisFin , recetteParMoisEnv, prevParMoisEnv }
         display: true,
         text: 'Diagramme en baton',
       },
+    
     },
     scales: {
       y: {
-        beginAtZero: true, // Début de l'axe Y à 0
-        min: 0, // Valeur minimale de l'axe Y
-        max: 10000000, // Valeur maximale de l'axe Y (ajuster selon tes données)
-        ticks: {
-          stepSize: 1000, // Intervalle entre les graduations de l'axe Y
-        },
+        beginAtZero: true,
+        min: 0
       },
     },
   };

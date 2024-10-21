@@ -187,6 +187,14 @@ app.post('/api/recettes', (req, res) => {
       annee_prev = $1
       AND mois_prev::integer BETWEEN $2 AND $3
   `
+  //prevision totale cumulée
+  let previsionCumule = `
+    SELECT SUM(prevision) AS prevision_totale
+    FROM "NIFONLINE"."PREVISION"
+    WHERE 
+      annee_prev = $1
+      AND mois_prev::integer BETWEEN 1 AND $2
+  `
 
   //recette par nature
   let recetteParNature = `
@@ -215,20 +223,27 @@ app.post('/api/recettes', (req, res) => {
   `
 
   let previsionTotaleParams = [annee,moisDebut, moisFin];
+  let previsionCumuleParams = [annee,moisDebut];
   let recetteParNatureParams = [annee,moisDebut, moisFin];
   let recetteParBureauParams = [annee,moisDebut, moisFin];
 
   if (centre && centre !== 'Tous') {
     previsionTotale += ` AND code_bureau = $4`;
+    previsionCumule += ` AND code_bureau = $3`;
     recetteParNature += ` AND cr.code_bureau = $4`;
     previsionTotaleParams.push(centre);
     recetteParNatureParams.push(centre);
+    previsionCumuleParams.push(centre);
   }
 
   if (nature && nature !== 'Tous') {
     const paramIndex = previsionTotaleParams.length + 1;
     previsionTotale += ` AND num_imp::integer = $${paramIndex}`;
     previsionTotaleParams.push(nature);
+
+    const paramIndex3 = previsionCumuleParams.length + 1;
+    previsionCumule += ` AND num_imp::integer = $${paramIndex3}`;
+    previsionCumuleParams.push(nature);
     
     const paramIndex2 = recetteParBureauParams.length + 1;
     recetteParBureau += ` AND cr.num_imp::integer = $${paramIndex2}`;
@@ -277,10 +292,11 @@ app.post('/api/recettes', (req, res) => {
     db.query(previsionMois, previsionParams),
     db.query(rangSql, rangParams),
     db.query(previsionTotale,previsionTotaleParams),
+    db.query(previsionCumule,previsionCumuleParams),
     db.query(recetteParNature,recetteParNatureParams),
     db.query(recetteParBureau,recetteParBureauParams)
   ])
-  .then(([totaleResult, parMoisResult,cumuleResult, parMoisResultPrev , rangResult,prevTotalResult, recetteParNatureResult, recetteParBureauResult]) => {
+  .then(([totaleResult, parMoisResult,cumuleResult, parMoisResultPrev , rangResult,prevTotalResult, prevCumuleResult, recetteParNatureResult, recetteParBureauResult]) => {
     res.json({
       somme_totale: totaleResult.rows[0]?.somme_totale || 0,
       recettes_par_mois: parMoisResult.rows,
@@ -288,6 +304,7 @@ app.post('/api/recettes', (req, res) => {
       prevision: parMoisResultPrev.rows,
       rang_data: rangResult.rows,
       somme_prevision : prevTotalResult.rows[0]?.prevision_totale || 0,
+      prevision_cumule : prevCumuleResult.rows[0]?.prevision_totale || 0,
       recettes_par_nature: recetteParNatureResult.rows,
       recettes_par_bureau : recetteParBureauResult.rows
     });
