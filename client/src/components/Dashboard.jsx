@@ -4,8 +4,10 @@ import ViewBarChart from "./ViewBarChart";
 import { DataContext } from '../DataProvider';
 import axios from 'axios';
 import Realisation from "./Realisation";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Piechart from "./Piechart";
+
+import '../Menu.css'
 
 function Dashboard() {
     const scroll = {
@@ -214,6 +216,13 @@ function Dashboard() {
                             centre_gestionnaire={centre_gestionnaire}
                             />
                         }
+                    </div>
+                    <div style={{width:'100%',textAlign:'center'}}>
+                        Page:&nbsp;
+                        <Link className={location.pathname==='/' ? "pageactive" : "page"} to="/">1</Link>&nbsp;
+                        <Link className={location.pathname==='/piechart' ? "pageactive" : "page"} to="/piechart">2</Link>&nbsp;
+                        <Link className={location.pathname==='/linechart' ? "pageactive" : "page"} to="/linechart">3</Link>&nbsp;
+                        
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@
     .menuitem {
         text-decoration: none;
         color: white;
-       
+        
     }
     
     .menuactive {
@@ -19,6 +19,18 @@
         background-color: rgb(32,177,170);
         display: flex;
         align-items: center;
+        cursor: pointer;
+    }
+
+    .page {
+        text-decoration: none;
+        color:rgb(120,137,145);
+        cursor: pointer;
+    }
+
+    .pageactive {
+        text-decoration: underline;
+        color: rgb(32,177,170);
         cursor: pointer;
     }
     

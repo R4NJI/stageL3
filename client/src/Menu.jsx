@@ -35,28 +35,20 @@ function Menu() {
                 </div>
                     
                 <div className="d-flex flex-column mt-4" style={{fontSize:'25px'}}>
-                    <div className={location.pathname==='/' ? "menuactive p-3" : "menu p-3"} >
+                    <div className={location.pathname==='/' || location.pathname==='/piechart' || location.pathname==='/linechart' ? "menuactive p-3" : "menu p-3"} >
                         <div className="me-2">
                            <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/" className="menuitem">RECETTE</Link>    
+                            <Link to="/" className="menuitem">Dashboard</Link>    
                         </div>
                     </div>
-                    <div className={location.pathname==='/piechart' ? "menuactive p-3" : "menu p-3"} >
+                    <div className={location.pathname==='/table' ? "menuactive p-3" : "menu p-3"} >
                         <div className="me-2">
                            <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/piechart" className="menuitem">RECETTE 2</Link>    
-                        </div>
-                    </div>
-                    <div className={location.pathname==='/linechart' ? "menuactive p-3" : "menu p-3"} >
-                        <div className="me-2">
-                           <img alt="icon savings" src={ic_home}/>
-                        </div>
-                        <div>
-                            <Link to="/linechart" className="menuitem">RECETTE 3</Link>    
+                            <Link to="/table" className="menuitem">Table</Link>    
                         </div>
                     </div>
                 </div>

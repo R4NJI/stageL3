@@ -315,6 +315,230 @@ app.post('/api/recettes', (req, res) => {
   });
 });
 
+app.post('/api/flux', (req, res) => {
+  const { annee, mois } = req.body;
+  // console.log('mois:',mois);
+
+  let fluxCentre = `
+  SELECT cg.code_bureau AS code,cg.cg_abbrev AS bureaux, 
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+    pre.mois_prev,pre.annee_prev
+
+  FROM "NIFONLINE"."CENTRE_GESTIONNAIRE" AS cg,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE cg.code_bureau=cr.code_bureau AND
+    cg.code_bureau=pre.code_bureau AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+    pre.mois_prev::integer=$1 AND pre.annee_prev::integer=$2
+
+  GROUP BY 
+    cg.code_bureau,cg.cg_abbrev,pre.mois_prev,pre.annee_prev
+
+  ORDER BY 
+  	cg.code_bureau,cg.cg_abbrev,pre.mois_prev,pre.annee_prev
+  `
+
+  let totalCentre = `
+  SELECT 
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+    pre.mois_prev,pre.annee_prev
+
+  FROM "NIFONLINE"."CENTRE_GESTIONNAIRE" AS cg,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE cg.code_bureau=cr.code_bureau AND
+    cg.code_bureau=pre.code_bureau AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+    pre.mois_prev::integer=$1 AND pre.annee_prev::integer=$2
+
+  GROUP BY 
+    pre.mois_prev,pre.annee_prev
+
+  ORDER BY 
+  	pre.mois_prev,pre.annee_prev
+  `
+
+  let fluxCentreCumule = `
+ SELECT 
+ 		cg.code_bureau AS code,
+		cg.cg_abbrev AS bureaux,
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+  		pre.annee_prev
+
+  FROM "NIFONLINE"."CENTRE_GESTIONNAIRE" AS cg,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE cg.code_bureau=cr.code_bureau AND
+    cg.code_bureau=pre.code_bureau AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+	  pre.mois_prev::integer BETWEEN 1 and $1
+    AND pre.annee_prev::integer=$2
+
+  GROUP BY 
+    cg.code_bureau,cg.cg_abbrev,pre.annee_prev
+	
+  ORDER BY 
+  	cg.code_bureau,cg.cg_abbrev,pre.annee_prev
+  `
+  let totalCentreCumule = `
+ SELECT 
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+  		pre.annee_prev
+
+  FROM "NIFONLINE"."CENTRE_GESTIONNAIRE" AS cg,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE cg.code_bureau=cr.code_bureau AND
+    cg.code_bureau=pre.code_bureau AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+	  pre.mois_prev::integer BETWEEN 1 and $1
+    AND pre.annee_prev::integer=$2
+
+  GROUP BY 
+    pre.annee_prev
+	
+  ORDER BY 
+  	pre.annee_prev
+  `
+
+  let fluxNature = `
+    SELECT asu.num_imp AS code,asu.abrev AS nature, 
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+    pre.mois_prev,pre.annee_prev
+
+  FROM "NIFONLINE"."ASSUJETTIS" AS asu,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE asu.num_imp=cr.num_imp AND
+    asu.num_imp=pre.num_imp AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+    pre.mois_prev::integer=$1 AND pre.annee_prev::integer=$2
+
+  GROUP BY 
+    asu.num_imp,asu.abrev,pre.mois_prev,pre.annee_prev
+
+  ORDER BY 
+  	asu.num_imp,asu.abrev,pre.mois_prev,pre.annee_prev
+  `
+  let totalNature = `
+    SELECT  
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+    pre.mois_prev,pre.annee_prev
+
+  FROM "NIFONLINE"."ASSUJETTIS" AS asu,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE asu.num_imp=cr.num_imp AND
+    asu.num_imp=pre.num_imp AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+    pre.mois_prev::integer=$1 AND pre.annee_prev::integer=$2
+
+  GROUP BY 
+   pre.mois_prev,pre.annee_prev
+
+  ORDER BY 
+  	pre.mois_prev,pre.annee_prev
+  `
+
+  let fluxNatureCumule = `
+  SELECT asu.num_imp AS code,asu.abrev AS nature, 
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+    	pre.annee_prev
+
+  FROM "NIFONLINE"."ASSUJETTIS" AS asu,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE asu.num_imp=cr.num_imp AND
+    asu.num_imp=pre.num_imp AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+	pre.mois_prev::integer BETWEEN 1 and $1
+    AND pre.annee_prev::integer=$2
+	
+
+  GROUP BY 
+    asu.num_imp,asu.abrev,pre.annee_prev
+
+  ORDER BY 
+  	asu.num_imp,asu.abrev,pre.annee_prev
+  `
+  
+  let totalNatureCumule = `
+  SELECT
+		SUM(pre.prevision) AS previsions, 
+		SUM(cr.tot_ver) AS recettes,
+    	pre.annee_prev
+
+  FROM "NIFONLINE"."ASSUJETTIS" AS asu,
+    "NIFONLINE"."PREVISION" AS pre,
+    "NIFONLINE"."CENTRAL_RECETTE" AS cr
+
+  WHERE asu.num_imp=cr.num_imp AND
+    asu.num_imp=pre.num_imp AND
+    pre.mois_prev::integer=EXTRACT(MONTH FROM cr.daty) AND
+    pre.annee_prev::integer=EXTRACT(YEAR FROM cr.daty) AND
+	pre.mois_prev::integer BETWEEN 1 and $1
+    AND pre.annee_prev::integer=$2
+	
+
+  GROUP BY 
+   pre.annee_prev
+
+  ORDER BY 
+  	pre.annee_prev
+  `
+
+  const params = [mois,annee];
+
+  Promise.all([
+    db.query(fluxCentre, params),
+    db.query(totalCentre, params),
+    db.query(fluxCentreCumule, params),
+    db.query(totalCentreCumule, params),
+    db.query(fluxNature, params),
+    db.query(totalNature, params),
+    db.query(fluxNatureCumule, params),
+    db.query(totalNatureCumule, params),
+  ])
+  .then(([fluxCentreRes,totalCentreRes,fluxCentreCumuleRes,totalCentreCumuleRes,fluxNatureRes,totalNatureRes,fluxNatureCumuleRes,totalNatureCumuleRes]) => {
+    res.json({
+      centres:fluxCentreRes.rows,
+      totalCentre:totalCentreRes.rows[0],
+      centresCumules:fluxCentreCumuleRes.rows,
+      totalCentreCumule:totalCentreCumuleRes.rows[0],
+      natures:fluxNatureRes.rows,
+      totalNature:totalNatureRes.rows[0],
+      naturesCumules:fluxNatureCumuleRes.rows,
+      totalNatureCumule:totalCentreCumuleRes.rows[0]
+    });
+  })
+  .catch(err => {
+    console.error("Erreur SQL: ", err);
+    res.status(500).json({ message: "Erreur pour récupérer les données du flux" });
+  });
+});
+
 
 const port = 3001;
 
