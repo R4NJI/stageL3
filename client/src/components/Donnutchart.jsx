@@ -37,7 +37,7 @@ const DonutChart = ({ recette, prevision }) => {
   }
 
   const data = {
-    labels: ['Recettes', 'Restant'],
+    labels: ['Réalisation', 'Restant'],
     datasets: [
       {
         label: 'Budget',

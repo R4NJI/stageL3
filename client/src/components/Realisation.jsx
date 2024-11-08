@@ -14,7 +14,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
     return (
         <div className="d-flex mt-3 justify-content-around" style={{width:'100%'}}>
             <div className="d-flex flex-column" id="realisation">
-                <div>Réalisation cumulée</div>
+                <div>Recette cumulée</div>
                 <div style={{fontSize:'15px'}}>
                     ({data.moisDebut == 1
                         ? `Janvier` 
@@ -22,7 +22,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
                     } {data.annee})
                 </div>
                 <div className="mt-2 mb-4">{janvCumule}</div>
-                <div className="mt-4">Réalisation du mois</div>
+                <div className="mt-4">Recette du mois</div>
                 <div style={{fontSize:'15px'}}>
                 ({data.moisDebut === data.moisFin 
                     ? mois0[parseInt(data.moisDebut, 10) - 1]
@@ -59,7 +59,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
                     
                         <div>Rang des centres</div>
                         { rang.slice(0, 3).map((r, index) => {
-                            const gestionnaire = centre_gestionnaire.find(cg => cg.code_bureau === r.code_bureau);
+                            const gestionnaire = centre_gestionnaire?.find(cg => cg.code_bureau === r.code_bureau);
                             return (
                                 <div>
                                     {index + 1} {index+1 == 1 ? `er` : `ème` }: {gestionnaire ? gestionnaire.cg_abbrev : 'Non trouvé'}

@@ -48,7 +48,7 @@ function Pienature({recetteParNature}) {
         labels: natures,
         datasets: [
           {
-            label: 'Votes',
+            label: 'Recettes',
             data: recettes,
             backgroundColor: generateColors(natures.length, colors), // Génère des couleurs alternées
             borderColor: generateColors(natures.length, colors), // Génère des bordures alternées

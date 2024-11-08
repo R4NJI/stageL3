@@ -9,6 +9,7 @@ import Graph from "./components/Graph";
 import { DataProvider } from './DataProvider'; 
 import Dashboard from "./components/Dashboard";
 import Table from "./components/Table";
+import Login from "./components/Login";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path='/linechart' element={<Dashboard />} />
             <Route path='/table' element={<Table />} />
           </Route>
+          <Route path='/login' element={<Login />} />
         </Routes>
       </BrowserRouter>
     </DataProvider>

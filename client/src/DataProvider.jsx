@@ -18,18 +18,16 @@ const DataProvider = ({ children }) => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [assujettisResponse,central_recetteResponse,centre_gestionnaireResponse,centre_fiscalResponse, previsionResponse] = await axios.all([
+            const [assujettisResponse,central_recetteResponse,centre_gestionnaireResponse, previsionResponse] = await axios.all([
                 axios.get('http://localhost:3001/api/assujettis'),
                 axios.get('http://localhost:3001/api/central_recette'),
                 axios.get('http://localhost:3001/api/centre_gestionnaire'),
-                axios.get('http://localhost:3001/api/centre_fiscal'),
                 axios.get('http://localhost:3001/api/prevision'),
             ]);
             //console.log("teste",assujettisResponse);
             setAssujettis(assujettisResponse.data.rows);
             setCentre_recette(central_recetteResponse.data.rows);
             setCentre_gestionnaire(centre_gestionnaireResponse.data.rows);
-            setCentre_fiscal(centre_fiscalResponse.data.rows);
             setPrevision(previsionResponse.data.rows)
 
         } catch (error) {
@@ -43,7 +41,7 @@ const DataProvider = ({ children }) => {
     }, []);
 
     return (
-        <DataContext.Provider value={{ assujettis, central_recette, centre_fiscal, centre_gestionnaire , prevision ,loading, error, fetchData }}>
+        <DataContext.Provider value={{ assujettis, central_recette, centre_gestionnaire , prevision ,loading, error, fetchData }}>
             {children}
         </DataContext.Provider>
     );

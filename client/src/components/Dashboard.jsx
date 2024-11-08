@@ -220,8 +220,8 @@ function Dashboard() {
                     <div style={{width:'100%',textAlign:'center'}}>
                         Page:&nbsp;
                         <Link className={location.pathname==='/' ? "pageactive" : "page"} to="/">1</Link>&nbsp;
-                        <Link className={location.pathname==='/piechart' ? "pageactive" : "page"} to="/piechart">2</Link>&nbsp;
-                        <Link className={location.pathname==='/linechart' ? "pageactive" : "page"} to="/linechart">3</Link>&nbsp;
+                        <Link className={location.pathname==='/linechart' ? "pageactive" : "page"} to="/linechart">2</Link>&nbsp;
+                        <Link className={location.pathname==='/piechart' ? "pageactive" : "page"} to="/piechart">3</Link>&nbsp;
                         
                     </div>
                 </div>

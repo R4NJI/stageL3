@@ -18,14 +18,6 @@ app.get('/api/assujettis', (req, res) => {
   })
 })
 
-app.get('/api/centre_fiscal', (req, res) => {
-  const sql = `SELECT * FROM "NIFONLINE"."CENTRE_FISCAL"`;
-  db.query(sql, (err, result ) => {
-    if (err) return res.json({Message: "Erreur pour récupérer les centres fiscaux"});
-    else return res.json(result);
-  })
-})
-
 app.get('/api/central_recette', (req, res) => {
   const sql = `SELECT * FROM "NIFONLINE"."CENTRAL_RECETTE"
                 ORDER BY id_centre_recette ASC `;
@@ -203,7 +195,7 @@ app.post('/api/recettes', (req, res) => {
     a.num_imp,a.abrev, 
     SUM(cr.tot_ver) AS total_ver
   FROM "NIFONLINE"."ASSUJETTIS" as a
-  RIGHT JOIN "NIFONLINE"."CENTRAL_RECETTE" as cr
+  INNER JOIN "NIFONLINE"."CENTRAL_RECETTE" as cr
   ON a.num_imp = cr.num_imp
   WHERE EXTRACT(YEAR FROM cr.daty) = $1
   AND EXTRACT(MONTH FROM cr.daty) BETWEEN $2 AND $3
@@ -216,7 +208,7 @@ app.post('/api/recettes', (req, res) => {
     cg.code_bureau,cg.cg_abbrev, 
     SUM(cr.tot_ver) AS total_ver
   FROM "NIFONLINE"."CENTRE_GESTIONNAIRE" as cg
-  LEFT JOIN "NIFONLINE"."CENTRAL_RECETTE" as cr
+  INNER JOIN "NIFONLINE"."CENTRAL_RECETTE" as cr
   ON cg.code_bureau = cr.code_bureau
   WHERE EXTRACT(YEAR FROM cr.daty) = $1
   AND EXTRACT(MONTH FROM cr.daty) BETWEEN $2 AND $3

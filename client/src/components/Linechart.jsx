@@ -80,8 +80,8 @@ const LineChart = ({ moisDebut, moisFin, recetteParMoisEnv, prevParMoisEnv }) =>
       {
         label: 'Prévisions',
         data: prevParMois,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Couleur de remplissage transparente
+        borderColor: 'rgb(255,87,51)',          // Couleur de la bordure orange (valeurs RGB de l'orange)
+        backgroundColor: 'rgba(255, 87, 51, 0.2)',
         tension: 0.4,
         fill: true, // Remplit l'espace entre la courbe "Prévisions" et l'axe Y=0
       },
