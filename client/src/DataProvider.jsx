@@ -5,6 +5,7 @@ import axios from 'axios';
 const DataContext = createContext();
 
 const DataProvider = ({ children }) => {
+    const token = localStorage.getItem("token");
 
     //données api
     const [assujettis, setAssujettis] = useState(null);
@@ -18,6 +19,11 @@ const DataProvider = ({ children }) => {
     const fetchData = async () => {
         setLoading(true);
         try {
+
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+            
             const [assujettisResponse,central_recetteResponse,centre_gestionnaireResponse, previsionResponse] = await axios.all([
                 axios.get('http://localhost:3001/api/assujettis'),
                 axios.get('http://localhost:3001/api/central_recette'),

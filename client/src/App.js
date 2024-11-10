@@ -10,6 +10,7 @@ import { DataProvider } from './DataProvider';
 import Dashboard from "./components/Dashboard";
 import Table from "./components/Table";
 import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -17,10 +18,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Menu />}>
-            <Route index element={<Dashboard />} />
-            <Route path='/piechart' element={<Dashboard />} />
-            <Route path='/linechart' element={<Dashboard />} />
-            <Route path='/table' element={<Table />} />
+            <Route index element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path='/piechart' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path='/linechart' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path='/table' element={<ProtectedRoute><Table /></ProtectedRoute>} />
           </Route>
           <Route path='/login' element={<Login />} />
         </Routes>

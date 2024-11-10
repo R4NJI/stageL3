@@ -1,12 +1,14 @@
 
 import logo from '../images/logojiramalogin.png';
 import bgverre from '../images/bgverre.png';
+import logodgi from '../images/logo_mfbdgi.jpg'
 import avatarlogin from '../images/avatarlogin.png';
 import unsee from '../images/unsee.png';
 import see from '../images/see.png';
 import './Login.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import ModalError from "react-modal";
 
@@ -14,12 +16,13 @@ function Login() {
 
   //  style du fond d'image
     const stylebg = {
-        backgroundImage: `url(${bgverre})`,
+        backgroundImage: `url(${logodgi})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         height: '100%',
-        width: '100%'
+        width: '100%',
+        display:'flex'
     }
 
     //username et password
@@ -45,18 +48,22 @@ function Login() {
      //lors de la soumission du formulaire
 
      const navigate = useNavigate();
+     
      const handleOnSubmit = (e) => {
       e.preventDefault();
-      if (field.username==="Toavina" && field.password==="Toavina") {
+
+      axios.post('http://localhost:3001/api/login', field)
+      .then(response => {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
         navigate("/");
-      } else {
-        if (field.password!=="Toavina")
-          setError("Mot de passe incorrect");
-        else 
-          setError("Nom d'utilisateur incorrect");
+      })
+      .catch(error => {
+        console.error('Erreur lors de la connexion : ', error);
+        setError("Information de connexion incorrecte");
         setIsModalErrorOpen(true);
-      }
-      
+      });
+
      }
 
 
@@ -70,15 +77,8 @@ function Login() {
 
     return (
         <div className="d-flex flex-row login" style={{ height: '100vh' }}>
-          <div  className="col-9 d-flex" >
-            <div className="d-flex flex-column justify-content-center align-items-center" style={stylebg}>
-              <div style={{ textAlign: 'center' }}>
-                <img alt="jirama logo" src={logo} style={{ height: '300px', width: '300px' }} />
-              </div>
-              <div id="jirama" style={{ fontSize: '40px', color: 'white', fontWeight: 'bold' }}>
-                <span>JI</span>RO SY <span>RA</span>NO <span>MA</span>LAGASY
-              </div>
-            </div>
+          <div  className="col-9 d-flex">
+            <img src={logodgi} alt="logo dgi" style={{height:'100%',width:'100%'}} />
           </div>
     
           <div className="col-3 d-flex justify-content-around">

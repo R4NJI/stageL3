@@ -2,11 +2,14 @@ const express = require('express');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db'); // Connexion à la base de données
+const userRoute = require('./userRoute');
+require('dotenv').config();
+const authenticateToken = require('./authenticateToken');
 
 const app = express();
 app.use(cors()); // gérer le cors
 app.use(bodyParser.json()); // Middleware pour analyser le JSON
-
+app.use('/api',userRoute);
 
 //Logique des apis
 app.get('/api/assujettis', (req, res) => {
@@ -530,6 +533,7 @@ app.post('/api/flux', (req, res) => {
     res.status(500).json({ message: "Erreur pour récupérer les données du flux" });
   });
 });
+
 
 
 const port = 3001;

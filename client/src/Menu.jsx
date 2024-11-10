@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 
 //css
 import './Menu.css';
@@ -10,6 +10,7 @@ import ic_home from './images/icon_home.svg';
 
 function Menu() {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const scroll = {
         backgroundColor:'rgb(247,247,247)',
@@ -17,6 +18,15 @@ function Menu() {
         color:'rgb(120,137,145)',
         fontFamily:'Inter'
     }
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        // Supprimer le token du localStorage
+        localStorage.removeItem('token');
+      
+        // Redirection vers la page de connexion
+        navigate('/login');
+    };
 
     return (
         <div className="d-flex flex-row monmenu" style={{height:'100vh'}}>
@@ -63,7 +73,7 @@ function Menu() {
                     <div className="dropdown">
                         <button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
                         <ul className="dropdown-menu">
-                        <li><Link className="dropdown-item" to='/' >Se déconnecter</Link></li>
+                        <li><Link className="dropdown-item" onClick={handleLogout}>Se déconnecter</Link></li>
                         </ul>
                     </div>
                 </div>
