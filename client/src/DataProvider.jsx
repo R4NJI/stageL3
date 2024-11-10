@@ -2,14 +2,16 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+
 const DataContext = createContext();
 
 const DataProvider = ({ children }) => {
     const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem('user'));
+
 
     //données api
     const [assujettis, setAssujettis] = useState(null);
-    const [centre_fiscal, setCentre_fiscal] = useState(null);
     const [centre_gestionnaire, setCentre_gestionnaire] = useState(null);
     const [central_recette, setCentre_recette] = useState(null);
     const [prevision, setPrevision] = useState(null);
@@ -47,7 +49,7 @@ const DataProvider = ({ children }) => {
     }, []);
 
     return (
-        <DataContext.Provider value={{ assujettis, central_recette, centre_gestionnaire , prevision ,loading, error, fetchData }}>
+        <DataContext.Provider value={{ assujettis, central_recette, centre_gestionnaire ,token,user, prevision ,loading, error, fetchData }}>
             {children}
         </DataContext.Provider>
     );

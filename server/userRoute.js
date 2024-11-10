@@ -54,8 +54,15 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    // Envoi du token au client
-    res.json({ token });
+    // Renvoyer le token et les informations utilisateur
+    res.json({
+      token,
+      user: {
+        id: user.rows[0].id,
+        username: user.rows[0].username
+        // Ajoute d'autres informations si nécessaire
+      }
+    });
     
   } catch (error) {
     console.error('Erreur lors de la connexion:', error);

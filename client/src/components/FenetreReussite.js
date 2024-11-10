@@ -1,5 +1,5 @@
 import { Modal, Button } from 'react-bootstrap';
-import iconsuccess from '../../assets/images/iconsuccess.png';
+import iconsuccess from '../images/iconsuccess.png';
 
 function FenetreReussite({ show, titre , onClose }) {
     return (

@@ -54,8 +54,14 @@ function Login() {
 
       axios.post('http://localhost:3001/api/login', field)
       .then(response => {
-        const token = response.data.token;
+        const { token, user } = response.data;
+
+        // Stocker le token dans le localStorage
         localStorage.setItem("token", token);
+
+        // Stocker les informations de l'utilisateur dans le localStorage
+        localStorage.setItem("user", JSON.stringify(user));
+
         navigate("/");
       })
       .catch(error => {

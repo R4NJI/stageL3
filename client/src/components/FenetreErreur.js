@@ -1,5 +1,5 @@
 import { Modal, Button } from 'react-bootstrap';
-import iconerror from '../../assets/images/iconerror.png';
+import iconerror from '../images/iconerror.png';
 
 function FenetreErreur({ show, titre , onClose }) {
     return (

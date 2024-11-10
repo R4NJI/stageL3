@@ -3,12 +3,18 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 //css
 import './Menu.css';
 
-import photo from './images/photo.jpg';
+import photo from './images/avatarlogin.png';
 import mef from './images/mef.jpg';
 import ic_finance from './images/icon_finance.svg';
 import ic_home from './images/icon_home.svg';
+import { DataContext } from "./DataProvider";
+import { useContext, useState } from "react";
+import ModifLogin from "./components/ModifLogin";
 
 function Menu() {
+    const { user } = useContext(DataContext);
+    console.log("user",user);
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -28,8 +34,30 @@ function Menu() {
         navigate('/login');
     };
 
+
+    //gestion modal
+    const [showModifCount,setShowModifCount] = useState(false);
+    
+    const handleOnClickModif = (e) =>{
+        e.preventDefault();
+        setShowModifCount(true);
+    }
+
+
+    const handleCloseModifLogin = () => {
+        setShowModifCount(false);
+    }
+
+    // const handleOnEditCount = (client) => {
+    //     setDatamodif(client);
+    //     setShowModifClient(true);
+    // }
+
+
     return (
         <div className="d-flex flex-row monmenu" style={{height:'100vh'}}>
+            <ModifLogin show={showModifCount} onClose={handleCloseModifLogin}/>
+
             <div style={{backgroundColor:'rgb(255,87,51)',width:'20vw'}}>
                 <div className="d-flex pt-4 ps-2 justify-content-start align-items-center">
                     <div style={{border:'1px solid white',borderRadius:'50%'}}>
@@ -68,11 +96,12 @@ function Menu() {
 
             <div className="d-flex flex-column" style={{width:'80vw'}}>
                 <div className="d-flex justify-content-end p-1 align-items-center header" >
-                    <div style={{paddingRight:'20px'}}>Toavina</div>
-                    <div><img alt="" src={photo} style={{height:'50px',width:'50px',borderRadius:'25px'}}/></div>
+                    <div style={{paddingRight:'20px'}}>{user?.username}</div>
+                    <div><img alt="" src={photo} style={{height:'50px',width:'70px',borderRadius:'25px'}}/></div>
                     <div className="dropdown">
                         <button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
                         <ul className="dropdown-menu">
+                        <li><Link className="dropdown-item" onClick={handleOnClickModif}>Modifier le compte</Link></li>
                         <li><Link className="dropdown-item" onClick={handleLogout}>Se déconnecter</Link></li>
                         </ul>
                     </div>
