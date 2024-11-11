@@ -7,19 +7,20 @@ const DataContext = createContext();
 
 const DataProvider = ({ children }) => {
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem('user'));
-
+    // const user = JSON.parse(localStorage.getItem('user'));
 
     //données api
     const [assujettis, setAssujettis] = useState(null);
     const [centre_gestionnaire, setCentre_gestionnaire] = useState(null);
     const [central_recette, setCentre_recette] = useState(null);
     const [prevision, setPrevision] = useState(null);
+    const [user,setUser] = useState(null);
     const [error,setError] = useState(null);
     const [loading,setLoading] = useState(null);
 
     const fetchData = async () => {
         setLoading(true);
+        setUser(JSON.parse(localStorage.getItem('user')));
         try {
 
             const headers = {

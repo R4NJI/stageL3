@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import FenetreReussite from "./FenetreReussite";
@@ -10,11 +10,14 @@ import iconeyeshow from '../images/iconeyeshow.png';
 import iconuser from '../images/iconuser.png';
 
 import axios from 'axios';
+import { DataContext } from '../DataProvider';
 
 function ModifLogin({ show, onClose }) {
     // data modifier
+    const { user, fetchData } = useContext(DataContext);
     
     const [data, setData] = useState({
+        id:user?.id,
         username:'',
         lastpassword:'',
         password:''
@@ -33,22 +36,23 @@ function ModifLogin({ show, onClose }) {
     // Soumission du formulaire
     const handleOnSubmit = (e) => {
         e.preventDefault();
+        
    
         // Logique pour modifier le client ici
-        // axios.put(`http://localhost:3001/api/user`, data , {
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     })
-        //     .then(res => {
-        //         setShowModalSuccess(true);
-        //         // fetchData();  // Rafraîchir les données
-    
-        //     })
-        //     .catch(err => {
-        //         setShowModalError(true);
-        //         console.error("Erreur lors de la modification du client:", err)
-        // });
+        axios.put(`http://localhost:3001/api/user`, data , {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            })
+            .then(res => {
+                setShowModalSuccess(true);
+                localStorage.setItem("user", JSON.stringify(data));
+            })
+            .catch(err => {
+                console.error("Erreur lors de la modification du client:", err)
+                setMessage(err.response.data.message);
+                setShowModalError(true);
+        });
         
         
     }
@@ -58,9 +62,11 @@ function ModifLogin({ show, onClose }) {
     const handleCloseModalsSuccess = () => {
         setShowModalSuccess(false);
         onClose();
+        fetchData();
     }
 
     // Fenêtre d'erreur
+    const [message,setMessage] = useState("Modification du compte échouée !");
     const [showModalError, setShowModalError] = useState(false);
     const handleCloseModalsError = () => {
         setShowModalError(false);
@@ -118,13 +124,13 @@ function ModifLogin({ show, onClose }) {
                 <form className="modifLogin" onSubmit={handleOnSubmit}>
                     <FenetreReussite
                         show={showModalSuccess}
-                        titre="Modification du compte réussie !"
+                        titre="Modification du compte échouée !"
                         onClose={handleCloseModalsSuccess}
                     />
 
                     <FenetreErreur
                         show={showModalError}
-                        titre="Modification du compte échouée !"
+                        titre={message}
                         onClose={handleCloseModalsError}
                     />
 

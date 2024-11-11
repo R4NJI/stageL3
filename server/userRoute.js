@@ -18,16 +18,15 @@ router.get('/user', authenticateToken, async (req, res) => {
 });
 
 // Mettre à jour les informations de l'utilisateur
-router.put('/user', authenticateToken, async (req, res) => {
-  const { username, password } = req.body;
+router.put('/user', async (req, res) => {
+  const { username, lastpassword, password, id } = req.body;
   try {
-    let hashedPassword;
-    if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
+    const user = await pool.query('SELECT * FROM "NIFONLINE"."USER" WHERE id = $1', [id]);
+    if (user.password!=lastpassword)  return res.status(400).json({ message: 'Mot de passe incorrect' });
+    
     await pool.query(
-      'UPDATE "NIFONLINE"."USER" SET username = $1, password = COALESCE($2, password) WHERE id = $3',
-      [username, req.user.id]
+      'UPDATE "NIFONLINE"."USER" SET username = $1, password = $2 WHERE id = $3',
+      [username, password,id]
     );
     res.json({ message: 'Informations mises à jour' });
   } catch (error) {

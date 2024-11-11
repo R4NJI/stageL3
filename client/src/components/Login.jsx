@@ -66,7 +66,7 @@ function Login() {
       })
       .catch(error => {
         console.error('Erreur lors de la connexion : ', error);
-        setError("Information de connexion incorrecte");
+        setError(error.response.data.message);
         setIsModalErrorOpen(true);
       });
 
