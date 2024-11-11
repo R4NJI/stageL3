@@ -36,7 +36,7 @@ function ModifLogin({ show, onClose }) {
     // Soumission du formulaire
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        
+        console.log(data)
    
         // Logique pour modifier le client ici
         axios.put(`http://localhost:3001/api/user`, data , {

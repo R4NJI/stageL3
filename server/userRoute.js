@@ -22,7 +22,7 @@ router.put('/user', async (req, res) => {
   const { username, lastpassword, password, id } = req.body;
   try {
     const user = await pool.query('SELECT * FROM "NIFONLINE"."USER" WHERE id = $1', [id]);
-    if (user.password!=lastpassword)  return res.status(400).json({ message: 'Mot de passe incorrect' });
+    if (user.rows[0]?.password!=lastpassword)  return res.status(400).json({ message: 'Mot de passe incorrect' });
     
     await pool.query(
       'UPDATE "NIFONLINE"."USER" SET username = $1, password = $2 WHERE id = $3',
