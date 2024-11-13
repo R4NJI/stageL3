@@ -1,7 +1,7 @@
 
 import logo from '../images/logojiramalogin.png';
 import bgverre from '../images/bgverre.png';
-import logodgi from '../images/logo_mfbdgi.jpg'
+import logodgi from '../images/batssif.jpg'
 import avatarlogin from '../images/avatarlogin.png';
 import unsee from '../images/unsee.png';
 import see from '../images/see.png';
@@ -82,8 +82,8 @@ function Login() {
      }
 
     return (
-        <div className="d-flex flex-row login" style={{ height: '100vh' }}>
-          <div  className="col-9 d-flex">
+        <div className="d-flex flex-row login" style={{ height: '100vh' }}> 
+          <div  className="col-9 d-flex justify-content-center align-items-center" >
             <img src={logodgi} alt="logo dgi" style={{height:'100%',width:'100%'}} />
           </div>
     

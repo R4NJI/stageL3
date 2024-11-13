@@ -7,9 +7,13 @@ import photo from './images/avatarlogin.png';
 import mef from './images/mef.jpg';
 import ic_finance from './images/icon_finance.svg';
 import ic_home from './images/icon_home.svg';
+import ic_table from './images/icon_table.svg';
 import { DataContext } from "./DataProvider";
 import { useContext, useState } from "react";
 import ModifLogin from "./components/ModifLogin";
+
+import ic_screenshot from './images/ic_screenshot.svg';
+import html2canvas from 'html2canvas';
 
 function Menu() {
     const { user } = useContext(DataContext);
@@ -53,6 +57,16 @@ function Menu() {
     //     setShowModifClient(true);
     // }
 
+    const captureImage = () => {
+        const element = document.getElementById('capture-section');
+        html2canvas(element).then(function(canvas) {
+
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg","image/octet-stream");
+            a.download = 'modulestat.jpg';
+            a.click();
+        })
+    }
 
     return (
         <div className="d-flex flex-row monmenu" style={{height:'100vh'}}>
@@ -83,7 +97,7 @@ function Menu() {
                     </div>
                     <div className={location.pathname==='/table' ? "menuactive p-3" : "menu p-3"} >
                         <div className="me-2">
-                           <img alt="icon savings" src={ic_home}/>
+                           <img alt="icon savings" src={ic_table}/>
                         </div>
                         <div>
                             <Link to="/table" className="menuitem">Table</Link>    
@@ -95,18 +109,22 @@ function Menu() {
             </div>
 
             <div className="d-flex flex-column" style={{width:'80vw'}}>
-                <div className="d-flex justify-content-end p-1 align-items-center header" >
-                    <div style={{paddingRight:'20px'}}>{user?.username}</div>
-                    <div><img alt="" src={photo} style={{height:'50px',width:'70px',borderRadius:'25px'}}/></div>
-                    <div className="dropdown">
-                        <button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
-                        <ul className="dropdown-menu">
-                        <li><Link className="dropdown-item" onClick={handleOnClickModif}>Modifier le compte</Link></li>
-                        <li><Link className="dropdown-item" onClick={handleLogout}>Se déconnecter</Link></li>
-                        </ul>
-                    </div>
+                <div className="d-flex justify-content-between p-1 align-items-center header" >
+                    <div style={{cursor:'pointer'}} className="ms-3"><img src={ic_screenshot} alt="icon screenshot" onClick={captureImage}/></div>
+                    <div className="d-flex align-items-center">
+                        <div style={{paddingRight:'20px'}}>{user?.username}</div>
+                        <div><img alt="" src={photo} style={{height:'50px',width:'70px',borderRadius:'25px'}}/></div>
+                        <div className="dropdown">
+                            <button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul className="dropdown-menu">
+                            <li><Link className="dropdown-item" onClick={handleOnClickModif}>Modifier le compte</Link></li>
+                            <li><Link className="dropdown-item" onClick={handleLogout}>Se déconnecter</Link></li>
+                            </ul>
+                        </div>
+                    </div>  
                 </div>
-                <div style={scroll}>
+               
+                <div style={scroll} id="capture-section">
                     <Outlet/>
                 </div>
             </div>

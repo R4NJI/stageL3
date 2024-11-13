@@ -104,10 +104,13 @@ function Dashboard() {
         setMois1(mois0.slice(0, moisFinInt)); 
     },[data.moisFin]);
 
+
     return (
         <div style={scroll}>
             <div className="d-flex flex-column p-3">
-                <div style={{fontSize:'25px'}}>Tableau de Bord</div>
+                <div style={{fontSize:'25px'}} className="d-flex">
+                    <div>Tableau de Bord</div>
+                </div>
 
                 <div className="d-flex flex-column p-2 mt-3" style={{fontSize:'20px',backgroundColor:'white'}}>
                     
