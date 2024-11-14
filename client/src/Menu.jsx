@@ -8,6 +8,7 @@ import mef from './images/mef.jpg';
 import ic_finance from './images/icon_finance.svg';
 import ic_home from './images/icon_home.svg';
 import ic_table from './images/icon_table.svg';
+import ic_file from './images/icon_file.svg';
 import { DataContext } from "./DataProvider";
 import { useContext, useState } from "react";
 import ModifLogin from "./components/ModifLogin";
@@ -103,7 +104,16 @@ function Menu() {
                             <Link to="/table" className="menuitem">Table</Link>    
                         </div>
                     </div>
+                    <div className={location.pathname==='/file' ? "menuactive p-3" : "menu p-3"} >
+                        <div className="me-2">
+                           <img alt="icon chat" src={ic_file}/>
+                        </div>
+                        <div>
+                            <Link to="/file" className="menuitem">File</Link>    
+                        </div>
+                    </div>
                 </div>
+                
                         
                      
             </div>

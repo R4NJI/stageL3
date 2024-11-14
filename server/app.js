@@ -3,13 +3,17 @@ var cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db'); // Connexion à la base de données
 const userRoute = require('./userRoute');
+const fileRoute = require('./fileRoute');
 require('dotenv').config();
 const authenticateToken = require('./authenticateToken');
 
 const app = express();
 app.use(cors()); // gérer le cors
 app.use(bodyParser.json()); // Middleware pour analyser le JSON
+
 app.use('/api',userRoute);
+
+app.use('/api',fileRoute);
 
 //Logique des apis
 app.get('/api/assujettis', (req, res) => {
