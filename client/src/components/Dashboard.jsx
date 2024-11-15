@@ -77,10 +77,10 @@ function Dashboard() {
 
     //Paramétrer le moisDebut en fonction de moisFin
     useEffect(() => {
-        console.log("data:",data);
+        // console.log("data:",data);
         axios.post('http://localhost:3001/api/recettes', data)
         .then(response => {
-          console.log('Résultats recues de lapi recettes : ', response.data);
+        //   console.log('Résultats recues de lapi recettes : ', response.data);
             setCumule(response.data.somme_totale);
             setRecetteParMois(response.data.recettes_par_mois);
             setPrevParMois(response.data.prevision);

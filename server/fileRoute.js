@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
+const pool = require('./db')
 
 // Configuration de Multer pour stocker les fichiers dans le dossier "uploads"
 const storage = multer.diskStorage({
@@ -15,34 +16,36 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Importez votre modèle ou vos fonctions de base de données ici pour manipuler les enregistrements
-// Exemple: const Fichier = require('../models/Fichier'); 
+
 
 // Route pour télécharger un fichier et enregistrer son chemin dans la BD
-router.post('/file', upload.single('file'), async (req, res) => {
+router.post('/file', upload.single('fichier'), async (req, res) => {
     try {
+        console.log(req.body.description);
         const { description } = req.body;
+        const nomfichier = req.file.filename;
         const lienFichier = `/uploads/${req.file.filename}`;
 
-        // Enregistrer dans la base de données ici
-        // Exemple :
-        // await Fichier.create({ description, lienFichier });
+        // Récupérer la date et l'heure actuelles du système
+        const datefichier = new Date();  // La date du système au format ISO
 
-        res.json({ message: 'Fichier téléchargé avec succès', filePath: lienFichier });
+        // Enregistrer dans la base de données ici
+        await pool.query(
+            'INSERT INTO "NIFONLINE"."FICHIER" (description,chemin,nomfichier,datefichier) VALUES($1,$2,$3,$4)',
+            [description, lienFichier, nomfichier,datefichier]);
+
+        res.json({ message: 'Fichier ajouté avec succès', filePath: lienFichier });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Erreur lors du téléchargement du fichier' });
+        res.status(500).json({ message: 'Erreur lors de l\'ajout du fichier' });
     }
 });
 
 // Route pour récupérer tous les fichiers
 router.get('/file', async (req, res) => {
     try {
-        // Récupérer tous les fichiers de la base de données
-        // Exemple :
-        // const fichiers = await Fichier.findAll();
-
-        res.json({ fichiers });
+        const users = await pool.query('SELECT * FROM "NIFONLINE"."FICHIER" ORDER BY numerofichier');
+        res.json(users);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur lors de la récupération des fichiers' });
@@ -50,17 +53,18 @@ router.get('/file', async (req, res) => {
 });
 
 // Route pour télécharger un fichier spécifique
-router.get('/download/:filename', (req, res) => {
-    const { filename } = req.params;
-    const filePath = path.join(__dirname, '../uploads', filename);
+router.get('/file/:nomfichier', (req, res) => {
 
+    const { nomfichier } = req.params;
+    const filePath = path.join(__dirname, 'uploads', nomfichier);
     res.download(filePath, (err) => {
         if (err) {
             console.error(err);
-            res.status(404).json({ message: 'Fichier non trouvé' });
+            res.status(500).json({ message: 'Erreur lors du téléchargement du fichier.' });
         }
     });
 });
+
 
 // Route pour supprimer un fichier
 router.delete('/file/:id', async (req, res) => {

@@ -17,10 +17,8 @@ function AjoutFile({ show, onClose }) {
     const { user, fetchData } = useContext(DataContext);
     
     const [data, setData] = useState({
-        id:user?.id,
         description:'',
-        lastpassword:'',
-        password:''
+        fichier:null
     });
 
 
@@ -32,24 +30,32 @@ function AjoutFile({ show, onClose }) {
         }));
     }
 
+        //l'event quand un fichier est selectionné
+        const handleFileChange = (event) => {
+            if (event.target.files && event.target.files.length > 0) {
+                setData(prevdata=> ({...prevdata,fichier:event.target.files[0]}))
+            }
+        };
+
 
     // Soumission du formulaire
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        console.log(data)
-   
+
+        const formData = new FormData();
+        formData.append('description', data.description);
+        formData.append('fichier', data.fichier);
+
         // Logique pour modifier le client ici
-        axios.put(`http://localhost:3001/api/user`, data , {
+        axios.post(`http://localhost:3001/api/file`, formData , {
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
             },
             })
             .then(res => {
                 setShowModalSuccess(true);
-                localStorage.setItem("user", JSON.stringify(data));
             })
             .catch(err => {
-                console.error("Erreur lors de la modification du client:", err)
                 setMessage(err.response.data.message);
                 setShowModalError(true);
         });
@@ -66,7 +72,7 @@ function AjoutFile({ show, onClose }) {
     }
 
     // Fenêtre d'erreur
-    const [message,setMessage] = useState("Modification du compte échouée !");
+    const [message,setMessage] = useState("Ajout du fichier échoué !");
     const [showModalError, setShowModalError] = useState(false);
     const handleCloseModalsError = () => {
         setShowModalError(false);
@@ -79,10 +85,10 @@ function AjoutFile({ show, onClose }) {
                 <Modal.Title>Ajouter un fichier</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className="modifFichier" onSubmit={handleOnSubmit}>
+                <form className="modifFichier" encType="multipart/form-data" onSubmit={handleOnSubmit}>
                     <FenetreReussite
                         show={showModalSuccess}
-                        titre="Modification du fichier échouée !"
+                        titre="Ajout du fichier réussi !"
                         onClose={handleCloseModalsSuccess}
                     />
 
@@ -95,16 +101,16 @@ function AjoutFile({ show, onClose }) {
                     <div className="d-flex justify-content-center align-items-center mb-4">
                       <div className='me-4'>
                         <label htmlFor="description">Description:</label>
-                        <input type="text" id='description' name='description'/>
+                        <input type="text" id='description' name='description' onChange={handleOnChange} required/>
                       </div>
                       <div>
-                        <label htmlFor="chemin">Fichier:</label>
-                        <input type="file" />
+                        <label htmlFor="fichier">Fichier:</label>
+                        <input type="file" id='fichier' onChange={handleFileChange} required/>
                       </div>
                     </div>
 
                     <div className="d-flex justify-content-center">
-                        <button type='submit' className='btn btn-primary me-3'>Confirmer</button>
+                        <button type='submit' className='btn btn-info me-3'>Confirmer</button>
                         <button type='button' className='btn btn-secondary' onClick={onClose}>Annuler</button>
                     </div>
                 </form>

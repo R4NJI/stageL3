@@ -104,7 +104,7 @@ function ModifFile({ show, onClose }) {
                     </div>
 
                     <div className="d-flex justify-content-center">
-                        <button type='submit' className='btn btn-primary me-3'>Confirmer</button>
+                        <button type='submit' className='btn btn-info me-3'>Confirmer</button>
                         <button type='button' className='btn btn-secondary' onClick={onClose}>Annuler</button>
                     </div>
                 </form>
