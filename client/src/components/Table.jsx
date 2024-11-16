@@ -32,6 +32,21 @@ function Table() {
 
     const [page,setPage] = useState(1);
 
+    function formatNumber(number) {
+        // Convertir le nombre en chaîne et séparer la partie entière et la partie décimale
+        let [integerPart, decimalPart] = number.toString().split('.');
+    
+        // Ajouter un séparateur de milliers (utilisation d'une regex)
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    
+        // Ajouter la partie décimale si elle existe
+        if (decimalPart) {
+            return `${integerPart},${decimalPart}`;
+        } else {
+            return integerPart;
+        }
+    }
+
     return (
         <div className="d-flex flex-column m-4 p-4" style={{backgroundColor:'white'}}>
             <div style={{textAlign:'center',fontWeight:'bold'}} className="mb-3">FLUX PAR { page==1 ? `CENTRE ET DIRECTION` : `NATURE D'IMPOTS` } </div>
@@ -76,7 +91,7 @@ function Table() {
                 </div>
             </div>
 
-            { page == 1 ? <Centre data={data} mois0={mois0} scroll={scroll}/> : <Nature data={data} mois0={mois0} scroll={scroll}/>}
+            { page == 1 ? <Centre data={data} mois0={mois0} scroll={scroll} formatNumber={formatNumber}/> : <Nature data={data} mois0={mois0} scroll={scroll} formatNumber={formatNumber}/>}
 
             <div style={{width:'100%',textAlign:'center',fontSize:'20px'}}>
                         Page:&nbsp;

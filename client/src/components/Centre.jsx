@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function Centre({data,mois0,scroll}) {
+function Centre({data,mois0,scroll,formatNumber}) {
  
     //variable pour stocker le flux centre
     const [centres,setCentres] = useState([]);
@@ -31,10 +31,12 @@ function Centre({data,mois0,scroll}) {
      });
     }, [data]);
 
+
+
     return (
         <div className="table-responsive-xl" style={scroll}>
-            <table className="table-bordered table-responsive" style={{fontFamily:'Roboto',textAlign:'center',fontSize:'13px',width:'100%'}}>
-                <thead style={{color:'black'}}>
+            <table className="table-bordered table-responsive" style={{fontFamily:'Roboto',textAlign:'right',fontSize:'13px',width:'100%'}}>
+                <thead style={{color:'black',textAlign:'center'}}>
                     <tr>
                         <th rowSpan='2'>BUREAUX</th>
                         <th colSpan='3'>{mois0[parseInt(data.mois,10)-1]} {data.annee}</th>
@@ -52,12 +54,12 @@ function Centre({data,mois0,scroll}) {
                 <tbody style={{color:'gray'}}>
                     { centres.map((centre,index)=> (
                         <tr key={index} >
-                            <td>{centre.bureaux}</td>
-                            <td>{centre.previsions}</td>
-                            <td>{centre.recettes}</td>
+                            <td style={{textAlign:'center'}}>{formatNumber(centre.bureaux)}</td>
+                            <td>{formatNumber(centre.previsions)}</td>
+                            <td>{formatNumber(centre.recettes)}</td>
                             <td>{  ((parseFloat(centre.recettes)/parseFloat(centre.previsions)) * 100).toFixed(2) } %</td>
-                            <td>{centresCumules.find(cc=>(cc.code==centre.code)).previsions}</td>
-                            <td>{centresCumules.find(cc=>(cc.code==centre.code)).recettes}</td>
+                            <td>{formatNumber( centresCumules.find(cc=>(cc.code==centre.code)).previsions )}</td>
+                            <td>{formatNumber( centresCumules.find(cc=>(cc.code==centre.code)).recettes )}</td>
                             <td>{ ((parseFloat(centresCumules.find(cc=>(cc.code==centre.code)).recettes)/parseFloat(centresCumules.find(cc=>(cc.code==centre.code)).previsions)) * 100).toFixed(2) } %</td>
                         
                         </tr>
@@ -66,11 +68,11 @@ function Centre({data,mois0,scroll}) {
                 <tfoot>
                     <tr style={{color:'white',backgroundColor:'rgb(120,137,145)'}}>
                         <td>Total</td>
-                        <td>{totalCentre?.previsions}</td>
-                        <td>{totalCentre?.recettes}</td>
+                        <td>{totalCentre? formatNumber(totalCentre.previsions): ''}</td>
+                        <td>{totalCentre? formatNumber(totalCentre.recettes): ''}</td>
                         <td>{  ((parseFloat(totalCentre?.recettes)/parseFloat(totalCentre?.previsions)) * 100).toFixed(2) } %</td>
-                        <td>{totalCentreCumule?.previsions}</td>
-                        <td>{totalCentreCumule?.previsions}</td>
+                        <td>{totalCentreCumule? formatNumber(totalCentreCumule.previsions): ''}</td>
+                        <td>{totalCentreCumule? formatNumber(totalCentreCumule.previsions): ''}</td>
                         <td>{  ((parseFloat(totalCentreCumule?.recettes)/parseFloat(totalCentreCumule?.previsions)) * 100).toFixed(2) } %</td>
                     </tr>
                 </tfoot>

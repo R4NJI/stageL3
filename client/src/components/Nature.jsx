@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function Nature({data,mois0,scroll}) {
+function Nature({data,mois0,scroll,formatNumber}) {
 
     const [natures,setNatures] = useState([]);
     const [naturesCumules,setNaturesCumules] = useState([]);
@@ -41,17 +41,17 @@ function Nature({data,mois0,scroll}) {
                         <th>EXCEDENT</th>
                     </tr>
                 </thead> 
-                <tbody style={{color:'gray'}}>
+                <tbody style={{color:'gray',textAlign:'right'}}>
            
                     {
                         natures.map((nature,index)=> (
                            <tr key={index}>
-                                <td>{ nature.nature }</td>
-                                <td>{ nature.previsions }</td>
-                                <td>{ nature.recettes }</td>
+                                <td style={{textAlign:'center'}}>{ nature.nature }</td>
+                                <td>{ formatNumber(nature.previsions) }</td>
+                                <td>{ formatNumber(nature.recettes) }</td>
                                 <td>{ ((parseFloat(nature.recettes)/ parseFloat(nature.previsions)) * 100).toFixed(2) } %</td>
-                                <td>{ naturesCumules.find(nc=>(nc.num_imp==nature.num_imp)).previsions }</td>
-                                <td>{ naturesCumules.find(nc=>(nc.num_imp==nature.num_imp)).recettes }</td>
+                                <td>{ formatNumber( naturesCumules.find(nc=>(nc.num_imp==nature.num_imp)).previsions ) }</td>
+                                <td>{ formatNumber( naturesCumules.find(nc=>(nc.num_imp==nature.num_imp)).recettes ) }</td>
                                 <td>{ ((parseFloat(naturesCumules.find(nc=>(nc.num_imp==nature.num_imp)).recettes)/ parseFloat(naturesCumules.find(nc=>(nc.num_imp==nature.num_imp)).previsions)) * 100).toFixed(2) } %</td>
                            </tr>     
 
@@ -60,14 +60,14 @@ function Nature({data,mois0,scroll}) {
                     }
              
                 </tbody>
-                <tfoot>
+                <tfoot style={{textAlign:'right'}}>
                     <tr style={{color:'white',backgroundColor:'rgb(120,137,145)'}}>
                         <td>Total</td>
-                        <td>{totalNature.previsions}</td>
-                        <td>{totalNature.recettes}</td>
+                        <td>{totalNature? formatNumber(totalNature.previsions): ''}</td>
+                        <td>{totalNature? formatNumber(totalNature.recettes): ''}</td>
                         <td>{ ((parseFloat(totalNature.recettes)/ parseFloat(totalNature.previsions)) * 100).toFixed(2) } %</td>
-                        <td>{totalNatureCumule.previsions}</td>
-                        <td>{totalNatureCumule.recettes}</td>
+                        <td>{totalNatureCumule? formatNumber(totalNatureCumule.previsions): ''}</td>
+                        <td>{totalNatureCumule? formatNumber(totalNatureCumule.recettes): ''}</td>
                         <td>{ ((parseFloat(totalNatureCumule.recettes)/ parseFloat(totalNatureCumule.previsions)) * 100).toFixed(2) } %</td>
                     </tr>
                 </tfoot>

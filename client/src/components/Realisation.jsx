@@ -9,6 +9,21 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
       ];
 
+      function formatNumber(number) {
+        // Convertir le nombre en chaîne et séparer la partie entière et la partie décimale
+        let [integerPart, decimalPart] = number.toString().split('.');
+    
+        // Ajouter un séparateur de milliers (utilisation d'une regex)
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    
+        // Ajouter la partie décimale si elle existe
+        if (decimalPart) {
+            return `${integerPart},${decimalPart}`;
+        } else {
+            return integerPart;
+        }
+    }
+
     const location = useLocation();
 
     return (
@@ -21,14 +36,14 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
                         :  `Janvier au ${mois0[parseInt(data.moisDebut, 10) - 1]}`                               
                     } {data.annee})
                 </div>
-                <div className="mt-2 mb-4">{janvCumule}</div>
+                <div className="mt-2 mb-4">{formatNumber(janvCumule)}</div>
                 <div className="mt-4">Recette du mois</div>
                 <div style={{fontSize:'15px'}}>
                 ({data.moisDebut === data.moisFin 
                     ? mois0[parseInt(data.moisDebut, 10) - 1]
                     : `${mois0[parseInt(data.moisDebut, 10) - 1]} au ${mois0[parseInt(data.moisFin, 10) - 1]}`} {data.annee})
                 </div>
-                <div className="mt-2">{cumule}</div>
+                <div className="mt-2">{formatNumber(cumule)}</div>
             
             </div>
             
@@ -73,7 +88,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
               
 
                 <div className="mt-3">Excedent</div>
-                <div>{cumule-somme_prevision}</div>
+                <div>{formatNumber(cumule-somme_prevision)}</div>
             </div>
         </div>
     )
