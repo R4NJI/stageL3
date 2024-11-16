@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const router = express.Router();
 const pool = require('./db')
+const fs = require('fs'); // Import du module File System
 
 // Configuration de Multer pour stocker les fichiers dans le dossier "uploads"
 const storage = multer.diskStorage({
@@ -99,27 +100,41 @@ router.get('/file/:nomfichier', (req, res) => {
 
 
 // Route pour supprimer un fichier
-router.delete('/file/:id', async (req, res) => {
+router.delete('/file/:numerofichier', async (req, res) => {
     try {
-        const { id } = req.params;
+        const { numerofichier } = req.params;
+
+        // Récupérer les informations du fichier depuis la base de données
+        const result = await pool.query(
+            'SELECT nomfichier FROM "NIFONLINE"."FICHIER" WHERE numerofichier=$1',
+            [numerofichier]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Fichier non trouvé" });
+        }
+
+        const { nomfichier } = result.rows[0];
 
         // Supprimer le fichier de la base de données
-        // const fichier = await Fichier.findByPk(id);
-        // await fichier.destroy();
+        await pool.query(
+            'DELETE FROM "NIFONLINE"."FICHIER" WHERE numerofichier=$1',
+            [numerofichier]
+        );
 
         // Supprimer le fichier du dossier "uploads"
-        const filePath = path.join(__dirname, '../uploads', fichier.lienFichier);
+        const filePath = path.join(__dirname, 'uploads', nomfichier);
         fs.unlink(filePath, (err) => {
             if (err) {
-                console.error(err);
-                res.status(500).json({ message: 'Erreur lors de la suppression du fichier' });
-                return;
+                console.error("Erreur lors de la suppression du fichier :", err);
+                return res.status(500).json({ message: "Erreur lors de la suppression du fichier" });
             }
-            res.json({ message: 'Fichier supprimé avec succès' });
+
+            res.json({ message: "Fichier supprimé avec succès" });
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Erreur lors de la suppression du fichier' });
+        res.status(500).json({ message: "Erreur lors de la suppression" });
     }
 });
 
