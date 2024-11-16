@@ -41,6 +41,38 @@ router.post('/file', upload.single('fichier'), async (req, res) => {
     }
 });
 
+//route pour modifier un fichier
+router.put('/file', upload.single('fichier'), async (req, res) => {
+    try {
+        console.log(req.body.description);
+        const { description, numerofichier } = req.body;
+        if (req.file) {
+            const nomfichier = req.file.filename;
+            const lienFichier = `/uploads/${req.file.filename}`;
+
+            // Récupérer la date et l'heure actuelles du système
+            const datefichier = new Date();  // La date du système au format ISO
+
+            // Enregistrer dans la base de données ici
+            await pool.query(
+                'UPDATE "NIFONLINE"."FICHIER" SET description=$1,chemin=$2,nomfichier=$3,datefichier=$4 WHERE numerofichier=$5',
+                [description, lienFichier, nomfichier,datefichier,numerofichier]);
+
+            res.json({ message: 'Fichier supprimé avec succès', filePath: lienFichier });
+        } else {
+            // Enregistrer dans la base de données ici
+            await pool.query(
+                'UPDATE "NIFONLINE"."FICHIER" SET description=$1 WHERE numerofichier=$2',
+                [description,numerofichier]);
+
+            res.json({ message: 'Fichier supprimé avec succès'});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la modification' });
+    }
+});
+
 // Route pour récupérer tous les fichiers
 router.get('/file', async (req, res) => {
     try {

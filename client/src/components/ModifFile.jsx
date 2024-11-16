@@ -12,16 +12,24 @@ import iconuser from '../images/iconuser.png';
 import axios from 'axios';
 import { DataContext } from '../DataProvider';
 
-function ModifFile({ show, onClose }) {
+function ModifFile({ show, onClose, datamodif }) {
     // data modifier
     const { user, fetchData } = useContext(DataContext);
     
     const [data, setData] = useState({
-        id:user?.id,
-        description:'',
-        lastpassword:'',
-        password:''
+        numerofichier:datamodif?.numerofichier,
+        description:datamodif?.description || "",
+        fichier:null
     });
+
+    useEffect(()=> {
+        // alert(datamodif.numerofichier)
+        setData(last => ({
+            ...last,
+            numerofichier:datamodif.numerofichier,
+            description:datamodif.description
+        }));
+    },[datamodif])
 
 
     const handleOnChange = (e) => {
@@ -32,24 +40,34 @@ function ModifFile({ show, onClose }) {
         }));
     }
 
+        //l'event quand un fichier est selectionné
+        const handleFileChange = (event) => {
+            if (event.target.files && event.target.files.length > 0) {
+                setData(prevdata=> ({...prevdata,fichier:event.target.files[0]}))
+            }
+        };
+
 
     // Soumission du formulaire
     const handleOnSubmit = (e) => {
+
         e.preventDefault();
-        console.log(data)
-   
+        
+        const formData = new FormData();
+        formData.append('numerofichier', data.numerofichier);
+        formData.append('description', data.description);
+        formData.append('fichier', data.fichier);
+
         // Logique pour modifier le client ici
-        axios.put(`http://localhost:3001/api/user`, data , {
+        axios.put(`http://localhost:3001/api/file`, formData , {
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
             },
             })
             .then(res => {
                 setShowModalSuccess(true);
-                localStorage.setItem("user", JSON.stringify(data));
             })
             .catch(err => {
-                console.error("Erreur lors de la modification du client:", err)
                 setMessage(err.response.data.message);
                 setShowModalError(true);
         });
@@ -66,7 +84,7 @@ function ModifFile({ show, onClose }) {
     }
 
     // Fenêtre d'erreur
-    const [message,setMessage] = useState("Modification du compte échouée !");
+    const [message,setMessage] = useState("Modification du fichier échoué !");
     const [showModalError, setShowModalError] = useState(false);
     const handleCloseModalsError = () => {
         setShowModalError(false);
@@ -76,13 +94,13 @@ function ModifFile({ show, onClose }) {
     return (
         <Modal show={show} onHide={onClose} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Modifier le fichier</Modal.Title>
+                <Modal.Title>Modifier un fichier</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className="modifFichier" onSubmit={handleOnSubmit}>
+                <form className="modifFichier" encType="multipart/form-data" onSubmit={handleOnSubmit}>
                     <FenetreReussite
                         show={showModalSuccess}
-                        titre="Modification du fichier échouée !"
+                        titre="Modification du fichier réussi !"
                         onClose={handleCloseModalsSuccess}
                     />
 
@@ -95,11 +113,11 @@ function ModifFile({ show, onClose }) {
                     <div className="d-flex justify-content-center align-items-center mb-4">
                       <div className='me-4'>
                         <label htmlFor="description">Description:</label>
-                        <input type="text" id='description' name='description'/>
+                        <input type="text" id='description' name='description' value={data.description} onChange={handleOnChange} required/>
                       </div>
                       <div>
-                        <label htmlFor="chemin">Fichier:</label>
-                        <input type="file" />
+                        <label htmlFor="fichier">Fichier:</label>
+                        <input type="file" id='fichier' onChange={handleFileChange}/>
                       </div>
                     </div>
 

@@ -4,6 +4,8 @@ import FenetreConfirmation from './FenetreConfirmation';
 import ModifFile from './ModifFile';
 import AjoutFile from './AjoutFile';
 import { DataContext } from '../DataProvider';
+import FenetreReussite from "./FenetreReussite";
+import FenetreErreur from "./FenetreErreur";
 
 function File() {
     //css
@@ -13,7 +15,7 @@ function File() {
 
     }
 
-    const { fichier } = useContext(DataContext);
+    const { fichier,fetchData } = useContext(DataContext);
     console.log("ici fichier:",fichier)
 
     //variable pour controler l'apparition des modales
@@ -21,12 +23,24 @@ function File() {
     const [showModifFile,setModifFile] = useState(false);
     const [showAjoutFile,setAjoutFile] = useState(false);
 
+
+    const [param,setParam] = useState(0);
     const handleCloseConfirm = () => {
         setConfirm(false);
     }
 
     const hanleOnConfirm = () => {
-        alert("fichier supprimé");
+       
+        // Logique pour modifier le client ici
+        axios.delete(`http://localhost:3001/api/file/${param}`)
+         .then(res => {
+             setShowModalSuccess(true);
+         })
+         .catch(err => {
+             setMessage(err.response.data.message);
+             setShowModalError(true);
+        });
+
         setConfirm(false);
     }
 
@@ -59,6 +73,34 @@ function File() {
 
         return new Date(date).toLocaleString('fr-FR', options).replace(/\//g, '/'); // Remplacer les '/' par des '-'
     }
+
+    const [datamodif,setDatamodif] = useState({});
+
+    const handleOnClickModifier =  (dataparam) => {
+        // console.log("dataparam",dataparam)
+        setDatamodif(dataparam);
+        setModifFile(true);
+    }
+
+    const handleShowConfirm = (numerofichier) => {
+        setConfirm(true);
+        setParam(numerofichier);
+    
+    }
+
+    // Fenêtre de réussite
+    const [showModalSuccess, setShowModalSuccess] = useState(false);
+    const handleCloseModalsSuccess = () => {
+        setShowModalSuccess(false);
+        fetchData();
+    }
+
+    // Fenêtre d'erreur
+    const [message,setMessage] = useState("Modification du fichier échoué !");
+    const [showModalError, setShowModalError] = useState(false);
+    const handleCloseModalsError = () => {
+        setShowModalError(false);
+    }
     return (
         <div className='d-flex flex-column m-4'>
             <div className='md-4'><button type='button' className='btn btn-info' onClick={()=>{setAjoutFile(true)}}><span>+</span> Ajouter un nouveau fichier</button></div>
@@ -76,12 +118,22 @@ function File() {
                 < ModifFile
                     show={showModifFile}
                     onClose={handleCloseModifFile}
+                    datamodif={datamodif}
                 />
                 < AjoutFile
                     show={showAjoutFile}
                     onClose={handleCloseAjoutFile}
                 />
-
+                <FenetreReussite
+                    show={showModalSuccess}
+                    titre="Suppression du fichier réussie !"
+                    onClose={handleCloseModalsSuccess}
+                />
+                <FenetreErreur
+                    show={showModalError}
+                    titre={message}
+                    onClose={handleCloseModalsError}
+                />
               
                 <table className='table table-bordered ' style={{textAlign:'center'}}>
                     <thead>
@@ -102,8 +154,8 @@ function File() {
                                 <td>{f.nomfichier}</td>
                                 <td>{formatDate(f.datefichier)}</td>
                                 <td><button type='button' className='btn btn-info' onClick={()=>handleDownload(f.nomfichier)}>Télécharger</button></td>
-                                <td><button type='button' className='btn btn-secondary' onClick={()=>setModifFile(true)}>Modifier</button></td>
-                                <td><button type='button' className='btn btn-danger' onClick={()=>setConfirm(true)}>Supprimer</button></td>
+                                <td><button type='button' className='btn btn-secondary' onClick={()=>handleOnClickModifier(f)}>Modifier</button></td>
+                                <td><button type='button' className='btn btn-danger' onClick={()=>handleShowConfirm(f.numerofichier)}>Supprimer</button></td>
                             </tr>
                             ))
                         }
