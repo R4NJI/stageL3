@@ -124,7 +124,7 @@ function ModifLogin({ show, onClose }) {
                 <form className="modifLogin" onSubmit={handleOnSubmit}>
                     <FenetreReussite
                         show={showModalSuccess}
-                        titre="Modification du compte échouée !"
+                        titre="Modification du compte réussie !"
                         onClose={handleCloseModalsSuccess}
                     />
 
