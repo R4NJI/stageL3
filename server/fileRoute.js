@@ -4,7 +4,6 @@ const path = require('path');
 const router = express.Router();
 const pool = require('./db')
 const fs = require('fs'); // Import du module File System
-
 // Configuration de Multer pour stocker les fichiers dans le dossier "uploads"
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -16,8 +15,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-
 
 // Route pour télécharger un fichier et enregistrer son chemin dans la BD
 router.post('/file', upload.single('fichier'), async (req, res) => {

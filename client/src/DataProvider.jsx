@@ -1,13 +1,10 @@
 // DataProvider.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
-
 const DataContext = createContext();
 
 const DataProvider = ({ children }) => {
     const token = localStorage.getItem("token");
-    // const user = JSON.parse(localStorage.getItem('user'));
 
     //données api
     const [assujettis, setAssujettis] = useState(null);

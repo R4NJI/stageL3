@@ -122,7 +122,7 @@ function Dashboard() {
                             <div className="d-flex">
                                 <div className="d-flex flex-column me-4">
                                     <div><label htmlFor="annee">Année</label></div>
-                                    <div style={{marginTop:'33px'}}><label htmlFor="centre">Centre opérationnel</label></div>
+                                    <div style={{marginTop:'33px'}}><label htmlFor="centre">Bureau</label></div>
                                 </div>
                                 <div className="d-flex flex-column">
                                     <div>

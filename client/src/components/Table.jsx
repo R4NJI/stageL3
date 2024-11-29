@@ -49,8 +49,8 @@ function Table() {
 
     return (
         <div className="d-flex flex-column m-4 p-4" style={{backgroundColor:'white'}}>
-            <div style={{textAlign:'center',fontWeight:'bold'}} className="mb-3">FLUX PAR { page==1 ? `CENTRE ET DIRECTION` : `NATURE D'IMPOTS` } </div>
-            <div style={{textAlign:'center',fontFamily:'Roboto'}} className="mb-3">Mois de {mois0[parseInt(data.mois,10)+1]} {data.annee}</div>
+            <div style={{textAlign:'center',fontWeight:'bold'}} className="mb-3">BILAN PAR { page==1 ? `CENTRE ET DIRECTION` : `NATURE D'IMPOTS` } </div>
+            <div style={{textAlign:'center',fontFamily:'Roboto'}} className="mb-3">Mois de {mois0[parseInt(data.mois,10)-1]} {data.annee}</div>
             <div className="d-flex mb-4" style={{fontFamily:'Roboto'}}>
                 <div className="me-3"><label htmlFor="mois">Mois :</label></div>
                 <div className="me-3">

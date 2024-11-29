@@ -72,7 +72,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
                  
                
                     
-                        <div>Rang des centres</div>
+                        <div>Rang des bureaux</div>
                         { rang.slice(0, 3).map((r, index) => {
                             const gestionnaire = centre_gestionnaire?.find(cg => cg.code_bureau === r.code_bureau);
                             return (
@@ -87,7 +87,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
 
               
 
-                <div className="mt-3">Excedent</div>
+                <div className="mt-3">Excédent</div>
                 <div>{formatNumber(cumule-somme_prevision)}</div>
             </div>
         </div>

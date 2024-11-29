@@ -538,8 +538,6 @@ app.post('/api/flux', (req, res) => {
   });
 });
 
-
-
 const port = 3001;
 
 // Démarrer le serveur

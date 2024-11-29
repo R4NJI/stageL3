@@ -39,7 +39,6 @@ function Menu() {
         navigate('/login');
     };
 
-
     //gestion modal
     const [showModifCount,setShowModifCount] = useState(false);
     
@@ -48,15 +47,10 @@ function Menu() {
         setShowModifCount(true);
     }
 
-
     const handleCloseModifLogin = () => {
         setShowModifCount(false);
     }
 
-    // const handleOnEditCount = (client) => {
-    //     setDatamodif(client);
-    //     setShowModifClient(true);
-    // }
 
     const captureImage = () => {
         const element = document.getElementById('capture-section');
@@ -93,7 +87,7 @@ function Menu() {
                            <img alt="icon savings" src={ic_home}/>
                         </div>
                         <div>
-                            <Link to="/" className="menuitem">Dashboard</Link>    
+                            <Link to="/" className="menuitem">Tableau de bord</Link>    
                         </div>
                     </div>
                     <div className={location.pathname==='/table' ? "menuactive p-3" : "menu p-3"} >
@@ -101,7 +95,7 @@ function Menu() {
                            <img alt="icon savings" src={ic_table}/>
                         </div>
                         <div>
-                            <Link to="/table" className="menuitem">Table</Link>    
+                            <Link to="/table" className="menuitem">Bilan</Link>    
                         </div>
                     </div>
                     <div className={location.pathname==='/file' ? "menuactive p-3" : "menu p-3"} >
@@ -109,7 +103,7 @@ function Menu() {
                            <img alt="icon chat" src={ic_file}/>
                         </div>
                         <div>
-                            <Link to="/file" className="menuitem">File</Link>    
+                            <Link to="/file" className="menuitem">Fichier</Link>    
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Menu from "./Menu";
-import Barchart from "./components/Barchart";
-import Piechart from "./components/Piechart";
-import Linechart from "./components/Linechart";
-import Graph from "./components/Graph";
-import Chat from "./components/Chat";
 
 import { DataProvider } from './DataProvider'; 
 import Dashboard from "./components/Dashboard";
@@ -24,7 +19,6 @@ function App() {
             <Route path='/piechart' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path='/linechart' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path='/table' element={<ProtectedRoute><Table /></ProtectedRoute>} />
-            <Route path='/chat' element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             <Route path='/file' element={<ProtectedRoute><File /></ProtectedRoute>} />
           </Route>
           <Route path='/login' element={<Login />} />

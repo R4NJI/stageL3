@@ -45,10 +45,10 @@ function Centre({data,mois0,scroll,formatNumber}) {
                     <tr >
                         <th >PREVISION</th>
                         <th>RECETTE</th>
-                        <th>EXCEDENT</th>
+                        <th>REALISATION</th>
                         <th>PREVISION</th>
                         <th>RECETTE</th>
-                        <th>EXCEDENT</th>
+                        <th>REALISATION</th>
                     </tr>
                 </thead> 
                 <tbody style={{color:'gray'}}>
