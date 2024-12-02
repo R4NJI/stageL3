@@ -6,6 +6,7 @@ import AjoutFile from './AjoutFile';
 import { DataContext } from '../DataProvider';
 import FenetreReussite from "./FenetreReussite";
 import FenetreErreur from "./FenetreErreur";
+import iconsearch from "../images/iconsearch.png"
 
 function File() {
     //css
@@ -15,7 +16,9 @@ function File() {
 
     }
 
-    const { fichier,fetchData } = useContext(DataContext);
+    const { fichier, fetchData } = useContext(DataContext);
+    const [filteredFiles, setFilteredFiles] = useState(fichier);
+
     console.log("ici fichier:",fichier)
 
     //variable pour controler l'apparition des modales
@@ -101,9 +104,31 @@ function File() {
     const handleCloseModalsError = () => {
         setShowModalError(false);
     }
+
+    //pour la recherche
+    const [search,setSearch] = useState("");
+    const handleChangeSearch = (e) => {
+        const {value} = e.target;
+        setSearch(value);
+    }
+
+
+    useEffect(() => {
+        const lesfichiers = fichier?.filter(f => 
+            f.description.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredFiles(lesfichiers);
+    }, [search, fichier]);
+
     return (
         <div className='d-flex flex-column m-4'>
-            <div className='md-4'><button type='button' className='btn btn-info' onClick={()=>{setAjoutFile(true)}}><span>+</span> Ajouter un nouveau fichier</button></div>
+            <div className='d-flex'>
+                <div className='md-4 me-4'><button type='button' className='btn btn-info' onClick={()=>{setAjoutFile(true)}}><span>+</span> Ajouter un nouveau fichier</button></div>
+                <div className="input-group input-group" style={{width:'430px'}}>
+                    <span className="input-group-text"><img src={iconsearch} alt=''/></span>
+                    <input id="email" className="form-control" placeholder="Rechercher un fichier" onChange={handleChangeSearch}/>
+                </div>
+            </div>
 
 
             <div className='d-flex table-responsive-xl mt-4' style={scroll}>
@@ -147,7 +172,7 @@ function File() {
                     </thead>
                     <tbody>
                         {
-                            fichier?.map((f,index)=>(
+                            filteredFiles?.map((f,index)=>(
                             <tr>
                                 <td>{f.numerofichier}</td>
                                 <td>{f.description}</td>
