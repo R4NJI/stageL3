@@ -100,22 +100,26 @@ function Menu() {
                             <Link to="/table" className="menuitem">Bilan</Link>    
                         </div>
                     </div>
-                    <div className={location.pathname==='/file' ? "menuactive p-3" : "menu p-3"} >
-                        <div className="me-2">
-                           <img alt="icon chat" src={ic_file}/>
+                    { user?.droit == 'administrateur' && (
+                    <>
+                        <div className={location.pathname==='/file' ? "menuactive p-3" : "menu p-3"} >
+                            <div className="me-2">
+                            <img alt="icon chat" src={ic_file}/>
+                            </div>
+                            <div>
+                                <Link to="/file" className="menuitem">Fichier</Link>    
+                            </div>
                         </div>
-                        <div>
-                            <Link to="/file" className="menuitem">Fichier</Link>    
+                        <div className={location.pathname==='/user' ? "menuactive p-3" : "menu p-3"} >
+                            <div className="me-2">
+                            <img alt="icon user" src={ic_user}/>
+                            </div>
+                            <div>
+                                <Link to="/user" className="menuitem">Utilisateur</Link>    
+                            </div>
                         </div>
-                    </div>
-                    <div className={location.pathname==='/user' ? "menuactive p-3" : "menu p-3"} >
-                        <div className="me-2">
-                           <img alt="icon user" src={ic_user}/>
-                        </div>
-                        <div>
-                            <Link to="/user" className="menuitem">Utilisateur</Link>    
-                        </div>
-                    </div>
+                    </>
+                    )}
                 </div>
                 
                         
@@ -131,7 +135,6 @@ function Menu() {
                         <div className="dropdown">
                             <button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul className="dropdown-menu">
-                            <li><Link className="dropdown-item" onClick={handleOnClickModif}>Modifier le compte</Link></li>
                             <li><Link className="dropdown-item" onClick={handleLogout}>Se déconnecter</Link></li>
                             </ul>
                         </div>
