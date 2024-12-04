@@ -12,15 +12,14 @@ import iconuser from '../images/iconuser.png';
 import axios from 'axios';
 import { DataContext } from '../DataProvider';
 
-function ModifLogin({ show, onClose }) {
+function AjoutLogin({ show, onClose }) {
     // data modifier
-    const { user, fetchData } = useContext(DataContext);
+    const { fetchData } = useContext(DataContext);
     
     const [data, setData] = useState({
-        id:user?.id,
         username:'',
-        lastpassword:'',
-        password:''
+        password:'',
+        droit:'visiteur'
     });
 
 
@@ -39,17 +38,16 @@ function ModifLogin({ show, onClose }) {
         console.log(data)
    
         // Logique pour modifier le client ici
-        axios.put(`http://localhost:3001/api/user`, data , {
+        axios.post(`http://localhost:3001/api/users`, data , {
             headers: {
                 'Content-Type': 'application/json',
             },
             })
             .then(res => {
                 setShowModalSuccess(true);
-                localStorage.setItem("user", JSON.stringify(data));
             })
             .catch(err => {
-                console.error("Erreur lors de la modification du client:", err)
+                console.error("Erreur lors de l'ajout de l'utilisateur:", err)
                 setMessage(err.response.data.message);
                 setShowModalError(true);
         });
@@ -66,7 +64,7 @@ function ModifLogin({ show, onClose }) {
     }
 
     // Fenêtre d'erreur
-    const [message,setMessage] = useState("Modification du compte échouée !");
+    const [message,setMessage] = useState("Ajout de l'utilisateur échoué !");
     const [showModalError, setShowModalError] = useState(false);
     const handleCloseModalsError = () => {
         setShowModalError(false);
@@ -107,24 +105,17 @@ function ModifLogin({ show, onClose }) {
     const handlePassClick = () => {
         setShowpass(prevvalue=>!prevvalue)
     }
-
-    
-    //pour le mot de passe
-    const [showlastpass, setShowlastpass] = useState(false);
-    const handleLastPassClick = () => {
-        setShowlastpass(prevvalue=>!prevvalue)
-    }
     
     return (
         <Modal show={show} onHide={onClose} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Modifier le compte</Modal.Title>
+                <Modal.Title>Ajouter un utilisateur</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className="modifLogin" onSubmit={handleOnSubmit}>
+                <form className="ajoutLogin" onSubmit={handleOnSubmit}>
                     <FenetreReussite
                         show={showModalSuccess}
-                        titre="Modification du compte réussie !"
+                        titre="Ajout de l'utilisateur réussi!"
                         onClose={handleCloseModalsSuccess}
                     />
 
@@ -141,31 +132,24 @@ function ModifLogin({ show, onClose }) {
 
                         <div className="d-flex flex-column ms-4">
                             <div className="d-flex">
-                                <div className="col-md-6 mb-3 me-4">
+                                <div className="col-md-7 mb-3 me-4">
                                     <label htmlFor="username" onClick={handleNameFocus}>Nom d'utilisateur:</label>
                                     <div className="d-flex flex-row form-control mb-3" style={isNameFocused? {border: '2px solid #87CEEB'} :{}}>
                                         <input style={{border:'none',outline:'none'}} type="text" name="username" id='username' value={data.username} onChange={handleOnChange} onFocus={handleNameFocus} onBlur={handleNameBlur} required/>
                                         <img src={iconuser} alt='iconuser'/>
                                     </div>
                                 </div>
-                                <div className='col-md-6 mb-3'>
+                                <div className='col-md-7 mb-3'>
                                     <label htmlFor='droit'>Droit:</label>
-                                    <select className='form-select'>
-                                        <option value='administrateur'>Administrateur</option>
+                                    <select className='form-select' onChange={handleOnChange} name='droit' id='droit' value={data.droit}>
                                         <option value='visiteur'>Visiteur</option>
+                                        <option value='administrateur'>Administrateur</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div className='d-flex'>
-                                <div className="col-md-6 mb-3 me-4">
-                                    <label htmlFor="lastpassword" onClick={handleLastPasswordFocus}>Ancien mot de passe:</label>
-                                    <div className="d-flex flex-row form-control" style={isLastPasswordFocused? {border: '2px solid #87CEEB'} :{}}>
-                                        <input style={{border:'none',outline:'none'}} type={showlastpass?'text':'password'} name="lastpassword" value={data.lastpassword} onChange={handleOnChange} onFocus={handleLastPasswordFocus} onBlur={handleLastPasswordBlur} required/>
-                                        <img style={{cursor:'pointer'}} src={showlastpass?iconeyeshow:iconeyeshide} alt='iconpass' onClick={handleLastPassClick}/>
-                                    </div>
-                                </div>
-                                <div className="col-md-6 mb-3">
+                                <div className="col-md-7 mb-3">
                                     <label htmlFor="password">Mot de passe:</label>
                                     <div className="d-flex flex-row form-control" style={isPasswordFocused? {border: '2px solid #87CEEB'} :{}}>
                                         <input style={{border:'none',outline:'none'}} type={showpass?'text':'password'} name="password" value={data.password} onChange={handleOnChange} onFocus={handlePasswordFocus} onBlur={handlePasswordBlur} required/>
@@ -187,4 +171,4 @@ function ModifLogin({ show, onClose }) {
     );
 }
 
-export default ModifLogin;
+export default AjoutLogin;

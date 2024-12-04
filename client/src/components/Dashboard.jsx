@@ -121,8 +121,8 @@ function Dashboard() {
                         <div className="d-flex justify-content-between mt-2 pt-3 pb-3" style={{borderTop:'2px solid rgb(232,232,234)',borderBottom:'2px solid rgb(232,232,234)',fontWeight:'bold',fontSize:'15px',fontFamily:'Roboto'}}>
                             <div className="d-flex">
                                 <div className="d-flex flex-column me-4">
-                                    <div><label htmlFor="annee">Année</label></div>
-                                    <div style={{marginTop:'33px'}}><label htmlFor="centre">Bureau</label></div>
+                                    <div><label htmlFor="annee">Année :</label></div>
+                                    <div style={{marginTop:'33px'}}><label htmlFor="centre">Bureau :</label></div>
                                 </div>
                                 <div className="d-flex flex-column">
                                     <div>
@@ -159,7 +159,7 @@ function Dashboard() {
                             <div className="d-flex">
                                 <div className="d-flex flex-column me-4">
                                     <div><label htmlFor="moisDebut">Mois de :</label></div>
-                                    <div style={{marginTop:'33px'}}><label htmlFor="nature">Nature d'impôt</label></div>
+                                    <div style={{marginTop:'33px'}}><label htmlFor="nature">Impôt :</label></div>
                                 </div>
                                 <div className="d-flex flex-column">
                                     <div>

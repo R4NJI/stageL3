@@ -14,6 +14,7 @@ import { useContext, useState } from "react";
 import ModifLogin from "./components/ModifLogin";
 
 import ic_screenshot from './images/ic_screenshot.svg';
+import ic_user from './images/ic_user.svg'
 import html2canvas from 'html2canvas';
 
 function Menu() {
@@ -104,6 +105,14 @@ function Menu() {
                         </div>
                         <div>
                             <Link to="/file" className="menuitem">Fichier</Link>    
+                        </div>
+                    </div>
+                    <div className={location.pathname==='/user' ? "menuactive p-3" : "menu p-3"} >
+                        <div className="me-2">
+                           <img alt="icon user" src={ic_user}/>
+                        </div>
+                        <div>
+                            <Link to="/user" className="menuitem">Utilisateur</Link>    
                         </div>
                     </div>
                 </div>

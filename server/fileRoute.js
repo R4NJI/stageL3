@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 // Route pour télécharger un fichier et enregistrer son chemin dans la BD
 router.post('/file', upload.single('fichier'), async (req, res) => {
     try {
-        console.log(req.body.description);
+       // console.log(req.body.description);
         const { description } = req.body;
         const nomfichier = req.file.filename;
         const lienFichier = `/uploads/${req.file.filename}`;
@@ -74,8 +74,8 @@ router.put('/file', upload.single('fichier'), async (req, res) => {
 // Route pour récupérer tous les fichiers
 router.get('/file', async (req, res) => {
     try {
-        const users = await pool.query('SELECT * FROM "NIFONLINE"."FICHIER" ORDER BY numerofichier');
-        res.json(users);
+        const fichiers = await pool.query('SELECT * FROM "NIFONLINE"."FICHIER" ORDER BY numerofichier');
+        res.json(fichiers);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur lors de la récupération des fichiers' });

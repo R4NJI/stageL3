@@ -12,6 +12,7 @@ const DataProvider = ({ children }) => {
     const [central_recette, setCentre_recette] = useState(null);
     const [prevision, setPrevision] = useState(null);
     const [user,setUser] = useState(null);
+    const [users,setUsers] = useState(null);
     const [fichier,setFichier] = useState(null);
     const [error,setError] = useState(null);
     const [loading,setLoading] = useState(null);
@@ -25,12 +26,14 @@ const DataProvider = ({ children }) => {
                 Authorization: `Bearer ${token}`
             };
             
-            const [assujettisResponse,central_recetteResponse,centre_gestionnaireResponse, previsionResponse,fichierResponse] = await axios.all([
+            const [assujettisResponse,central_recetteResponse,centre_gestionnaireResponse, previsionResponse,fichierResponse,usersResponse] = await axios.all([
                 axios.get('http://localhost:3001/api/assujettis'),
                 axios.get('http://localhost:3001/api/central_recette'),
                 axios.get('http://localhost:3001/api/centre_gestionnaire'),
                 axios.get('http://localhost:3001/api/prevision'),
                 axios.get('http://localhost:3001/api/file'),
+                axios.get('http://localhost:3001/api/users')
+         
             ]);
             console.log("teste",assujettisResponse);
             setAssujettis(assujettisResponse.data.rows);
@@ -38,6 +41,7 @@ const DataProvider = ({ children }) => {
             setCentre_gestionnaire(centre_gestionnaireResponse.data.rows);
             setPrevision(previsionResponse.data.rows);
             setFichier(fichierResponse.data.rows);
+            setUsers(usersResponse.data.rows);
 
         } catch (error) {
             setError(error);
@@ -50,7 +54,7 @@ const DataProvider = ({ children }) => {
     }, []);
 
     return (
-        <DataContext.Provider value={{ assujettis, central_recette, centre_gestionnaire ,token,user, prevision ,fichier,loading, error, fetchData }}>
+        <DataContext.Provider value={{ assujettis, central_recette, centre_gestionnaire ,token,user,users, prevision ,fichier,loading, error, fetchData }}>
             {children}
         </DataContext.Provider>
     );

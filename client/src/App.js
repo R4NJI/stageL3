@@ -8,6 +8,7 @@ import Table from "./components/Table";
 import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import File from "./components/File";
+import User from "./components/User";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path='/linechart' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path='/table' element={<ProtectedRoute><Table /></ProtectedRoute>} />
             <Route path='/file' element={<ProtectedRoute><File /></ProtectedRoute>} />
+            <Route path='/user' element={<ProtectedRoute><User /></ProtectedRoute>} />
           </Route>
           <Route path='/login' element={<Login />} />
         </Routes>

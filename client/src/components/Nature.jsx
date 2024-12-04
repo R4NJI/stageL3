@@ -35,10 +35,10 @@ function Nature({data,mois0,scroll,formatNumber}) {
                     <tr >
                         <th >PREVISION</th>
                         <th>RECETTE</th>
-                        <th>REALISATION</th>
+                        <th>TAUX DE REALISATION</th>
                         <th>PREVISION</th>
                         <th>RECETTE</th>
-                        <th>REALISATION</th>
+                        <th>TAUX DE REALISATION</th>
                     </tr>
                 </thead> 
                 <tbody style={{color:'gray',textAlign:'right'}}>

@@ -17,6 +17,7 @@ router.get('/user', authenticateToken, async (req, res) => {
   }
 });
 
+
 // Mettre à jour les informations de l'utilisateur
 router.put('/user', async (req, res) => {
   const { username, lastpassword, password, id } = req.body;
@@ -45,7 +46,7 @@ router.post('/login', async (req, res) => {
     // Comparaison du mot de passe
     const validPassword = password === user.rows[0].password;  // Remplace par bcrypt si tu utilises bcrypt
     if (!validPassword) return res.status(400).json({ message: 'Mot de passe incorrect' });
-
+    
     // Création du token avec les bonnes variables
     const token = jwt.sign(
       { id: user.rows[0].id, username: user.rows[0].username },  // Utilise user.rows[0]
@@ -68,5 +69,36 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de la connexion' });
   }
 });
+
+//CRUD users
+router.get('/users', async (req, res) => {
+  try {
+    const utilisateurs = await pool.query('SELECT * FROM "NIFONLINE"."USER" ORDER BY id');
+    res.json(utilisateurs);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur pour récupérer tous les utilisateurs' });
+  }
+
+});
+
+router.post('/users', async (req, res) => {
+  try {
+    const { username, password, droit } = req.body;
+
+    // Utilisation correcte des paramètres préparés
+    await pool.query(
+      'INSERT INTO "NIFONLINE"."USER" (username, password, droit) VALUES ($1, $2, $3)', 
+      [username, password, droit]
+    );
+
+    res.status(201).json({ message: 'Utilisateur créé avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de l\'insertion utilisateur:', error); // Log pour debug
+    res.status(500).json({ message: 'Erreur pour ajouter un utilisateur' });
+  }
+});
+
+
+
 
 module.exports = router;
