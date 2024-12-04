@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import FenetreConfirmation from './FenetreConfirmation';
-import ModifFile from './ModifFile';
 import AjoutLogin from './AjoutLogin';
+import ModifLogin from './ModifLogin';
 import { DataContext } from '../DataProvider';
 import FenetreReussite from "./FenetreReussite";
 import FenetreErreur from "./FenetreErreur";
@@ -18,10 +18,10 @@ function User() {
 
     // const { fichier, fetchData } = useContext(DataContext);
     // const [filteredFiles, setFilteredFiles] = useState(fichier);
-    const { users , fetchData } = useContext(DataContext);
+    const { user, users , fetchData } = useContext(DataContext);
     const [filteredUsers, setFilteredUsers] = useState(users);
 
-    console.log("ici utilisateur:",users)
+    // console.log("ici utilisateur:",users)
 
     //variable pour controler l'apparition des modales
     const [confirm,setConfirm] = useState(false);
@@ -50,11 +50,6 @@ function User() {
         setConfirm(false);
     }
 
-
-    const handleCloseModifFile = () => {
-        setModifFile(false)
-    }
-
     const handleCloseModifUser = () => {
         setModifUser(false)
     }
@@ -71,7 +66,6 @@ function User() {
     const handleOnClickModifier =  (dataparam) => {
         // console.log("dataparam",dataparam)
         setDatamodif(dataparam);
-        setModifFile(true);
         setModifUser(true);
     }
 
@@ -130,9 +124,9 @@ function User() {
                     onConfirm={hanleOnConfirm}
                     danger="ok"
                 />
-                < ModifFile
-                    show={showModifFile}
-                    onClose={handleCloseModifFile}
+                < ModifLogin
+                    show={showModifUser}
+                    onClose={handleCloseModifUser}
                     datamodif={datamodif}
                 />
                 < AjoutLogin
@@ -167,7 +161,7 @@ function User() {
                                 <td>{u.username}</td>
                                 <td>{u.droit}</td>
                                 <td><button type='button' className='btn btn-secondary' onClick={()=>handleOnClickModifier(u)}>Modifier</button></td>
-                                <td><button type='button' className='btn btn-danger' onClick={()=>handleShowConfirm(u.id)}>Supprimer</button></td>
+                                <td><button type='button' className='btn btn-danger' onClick={()=>handleShowConfirm(u.id)} disabled={user.id==u.id}>Supprimer</button></td>
                             </tr>
                             ))
                         }

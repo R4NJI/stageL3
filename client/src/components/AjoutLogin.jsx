@@ -105,9 +105,14 @@ function AjoutLogin({ show, onClose }) {
     const handlePassClick = () => {
         setShowpass(prevvalue=>!prevvalue)
     }
+
+    const handleClose = () => {
+        setData({ username: '', password: '', droit: 'visiteur' }); // Réinitialisation des champs
+        onClose(); // Fermer la modal
+    };
     
     return (
-        <Modal show={show} onHide={onClose} size="lg">
+        <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Ajouter un utilisateur</Modal.Title>
             </Modal.Header>
@@ -162,7 +167,7 @@ function AjoutLogin({ show, onClose }) {
                     </div>
 
                     <div className="d-flex justify-content-center">
-                        <button type='button' className='btn btn-secondary me-3' onClick={onClose}>Annuler</button>
+                        <button type='button' className='btn btn-secondary me-3' onClick={handleClose}>Annuler</button>
                         <button type='submit' className='btn btn-info'>Confirmer</button>
                     </div>
                 </form>

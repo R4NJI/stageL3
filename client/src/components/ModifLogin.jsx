@@ -12,16 +12,30 @@ import iconuser from '../images/iconuser.png';
 import axios from 'axios';
 import { DataContext } from '../DataProvider';
 
-function ModifLogin({ show, onClose }) {
+function ModifLogin({ show, onClose, datamodif }) {
     // data modifier
-    const { user, fetchData } = useContext(DataContext);
+    const {user,fetchData } = useContext(DataContext);
+    // console.log("datamodif:",datamodif);
     
     const [data, setData] = useState({
-        id:user?.id,
+        id:'',
         username:'',
         lastpassword:'',
-        password:''
+        password:'',
+        droit:''
     });
+
+    useEffect(()=> {
+        // alert(datamodif.numerofichier)
+        setData(last => ({
+            ...last,
+            id:datamodif?.id,
+            droit:datamodif?.droit,
+            username:datamodif?.username,
+            lastpassword:'',
+            password:''
+        }));
+    },[datamodif])
 
 
     const handleOnChange = (e) => {
@@ -39,14 +53,15 @@ function ModifLogin({ show, onClose }) {
         console.log(data)
    
         // Logique pour modifier le client ici
-        axios.put(`http://localhost:3001/api/user`, data , {
+        axios.put(`http://localhost:3001/api/users`, data , {
             headers: {
                 'Content-Type': 'application/json',
             },
             })
             .then(res => {
+                if (data.id==user.id)
+                    localStorage.setItem("user", JSON.stringify({id:data.id,username:data.username,droit:data.droit}));
                 setShowModalSuccess(true);
-                localStorage.setItem("user", JSON.stringify(data));
             })
             .catch(err => {
                 console.error("Erreur lors de la modification du client:", err)
@@ -118,13 +133,13 @@ function ModifLogin({ show, onClose }) {
     return (
         <Modal show={show} onHide={onClose} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Modifier le compte</Modal.Title>
+                <Modal.Title>Modifier de l'utilisateur</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <form className="modifLogin" onSubmit={handleOnSubmit}>
                     <FenetreReussite
                         show={showModalSuccess}
-                        titre="Modification du compte réussie !"
+                        titre="Modification de l'utilisateur réussie !"
                         onClose={handleCloseModalsSuccess}
                     />
 
@@ -150,9 +165,9 @@ function ModifLogin({ show, onClose }) {
                                 </div>
                                 <div className='col-md-6 mb-3'>
                                     <label htmlFor='droit'>Droit:</label>
-                                    <select className='form-select'>
-                                        <option value='administrateur'>Administrateur</option>
+                                    <select className='form-select' name='droit' id='droit' onChange={handleOnChange} value={data.droit}>
                                         <option value='visiteur'>Visiteur</option>
+                                        <option value='administrateur'>Administrateur</option>
                                     </select>
                                 </div>
                             </div>
@@ -168,7 +183,7 @@ function ModifLogin({ show, onClose }) {
                                 <div className="col-md-6 mb-3">
                                     <label htmlFor="password">Mot de passe:</label>
                                     <div className="d-flex flex-row form-control" style={isPasswordFocused? {border: '2px solid #87CEEB'} :{}}>
-                                        <input style={{border:'none',outline:'none'}} type={showpass?'text':'password'} name="password" value={data.password} onChange={handleOnChange} onFocus={handlePasswordFocus} onBlur={handlePasswordBlur} required/>
+                                        <input style={{border:'none',outline:'none'}} type={showpass?'text':'password'} name="password" value={data.password} onChange={handleOnChange} onFocus={handlePasswordFocus} onBlur={handlePasswordBlur}/>
                                         <img style={{cursor:'pointer'}} src={showpass?iconeyeshow:iconeyeshide} alt='iconpass' onClick={handlePassClick}/>
                                     </div>
                                 </div>

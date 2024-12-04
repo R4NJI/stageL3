@@ -19,6 +19,8 @@ import html2canvas from 'html2canvas';
 
 function Menu() {
     const { user } = useContext(DataContext);
+    // const user = JSON.parse(localStorage.getItem("user"));
+ 
     console.log("user",user);
 
     const location = useLocation();
@@ -34,8 +36,7 @@ function Menu() {
     const handleLogout = (e) => {
         e.preventDefault();
         // Supprimer le token du localStorage
-        localStorage.removeItem('token');
-      
+        localStorage.clear();
         // Redirection vers la page de connexion
         navigate('/login');
     };

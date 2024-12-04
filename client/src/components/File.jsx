@@ -19,7 +19,7 @@ function File() {
     const { fichier, fetchData } = useContext(DataContext);
     const [filteredFiles, setFilteredFiles] = useState(fichier);
 
-    console.log("ici fichier:",fichier)
+    // console.log("ici fichier:",fichier)
 
     //variable pour controler l'apparition des modales
     const [confirm,setConfirm] = useState(false);

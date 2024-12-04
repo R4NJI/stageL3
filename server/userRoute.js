@@ -10,30 +10,13 @@ require('dotenv').config();
 // Récupérer les informations de l'utilisateur
 router.get('/user', authenticateToken, async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT username FROM "NIFONLINE"."USER" WHERE id = $1', [req.user.id]);
+    const { rows } = await pool.query('SELECT * FROM "NIFONLINE"."USER" WHERE id = $1', [req.user.id]);
     res.json(rows[0]);
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 
-
-// Mettre à jour les informations de l'utilisateur
-router.put('/user', async (req, res) => {
-  const { username, lastpassword, password, id } = req.body;
-  try {
-    const user = await pool.query('SELECT * FROM "NIFONLINE"."USER" WHERE id = $1', [id]);
-    if (user.rows[0]?.password!=lastpassword)  return res.status(400).json({ message: 'Mot de passe incorrect' });
-    
-    await pool.query(
-      'UPDATE "NIFONLINE"."USER" SET username = $1, password = $2 WHERE id = $3',
-      [username, password,id]
-    );
-    res.json({ message: 'Informations mises à jour' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la mise à jour' });
-  }
-});
 
 // Route pour la connexion
 router.post('/login', async (req, res) => {
@@ -49,9 +32,9 @@ router.post('/login', async (req, res) => {
     
     // Création du token avec les bonnes variables
     const token = jwt.sign(
-      { id: user.rows[0].id, username: user.rows[0].username },  // Utilise user.rows[0]
+      { id: user.rows[0].id, username: user.rows[0].username, droit: user.rows[0].droit},  // Utilise user.rows[0]
         process.env.SECRET_KEY,
-      { expiresIn: '1h' }
+      { expiresIn: '3h' }
     );
 
     // Renvoyer le token et les informations utilisateur
@@ -59,7 +42,8 @@ router.post('/login', async (req, res) => {
       token,
       user: {
         id: user.rows[0].id,
-        username: user.rows[0].username
+        username: user.rows[0].username,
+        droit: user.rows[0].droit
         // Ajoute d'autres informations si nécessaire
       }
     });
@@ -98,6 +82,41 @@ router.post('/users', async (req, res) => {
   }
 });
 
+router.put('/users', async (req, res) => {
+  try {
+    // Récupère l'ID de l'utilisateur depuis l'URL
+    const { username, lastpassword,  password, droit, id } = req.body; // Récupère les nouvelles données du corps de la requête
+
+    const user = await pool.query('SELECT * FROM "NIFONLINE"."USER" WHERE id = $1', [id]);
+    if (user.rows[0]?.password!=lastpassword)  return res.status(400).json({ message: 'Ancien mot de passe incorrect' });
+
+    // Requête SQL pour la mise à jour
+    if (password!='') {
+      await pool.query(
+        `
+        UPDATE "NIFONLINE"."USER" 
+        SET username = $1, password = $2, droit = $3 
+        WHERE id = $4
+        `,
+        [username, password, droit, id]
+      );
+    } else {
+      await pool.query(
+        `
+        UPDATE "NIFONLINE"."USER" 
+        SET username = $1, password = $2, droit = $3 
+        WHERE id = $4
+        `,
+        [username, lastpassword, droit, id]
+      );
+    }
+
+    res.status(200).json({ message: 'Utilisateur modifié avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la modification:', error);
+    res.status(500).json({ message: 'Erreur de modification' });
+  }
+});
 
 
 

@@ -6,13 +6,16 @@ import avatarlogin from '../images/avatarlogin.png';
 import unsee from '../images/unsee.png';
 import see from '../images/see.png';
 import './Login.css';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { DataContext } from '../DataProvider';
 
 import ModalError from "react-modal";
 
 function Login() {
+
+  const { fetchData } = useContext(DataContext);
 
   //  style du fond d'image
     const stylebg = {
@@ -54,6 +57,7 @@ function Login() {
 
       axios.post('http://localhost:3001/api/login', field)
       .then(response => {
+     
         const { token, user } = response.data;
 
         // Stocker le token dans le localStorage
@@ -61,7 +65,12 @@ function Login() {
 
         // Stocker les informations de l'utilisateur dans le localStorage
         localStorage.setItem("user", JSON.stringify(user));
-
+      
+        // Stocker les informations de l'utilisateur dans le localStorage
+        localStorage.setItem("pseudo", {pseudo:'gifuto'});
+        fetchData();
+      
+     
         navigate("/");
       })
       .catch(error => {

@@ -18,8 +18,9 @@ const DataProvider = ({ children }) => {
     const [loading,setLoading] = useState(null);
 
     const fetchData = async () => {
+        // alert("declenché");
         setLoading(true);
-        setUser(JSON.parse(localStorage.getItem('user')));
+        setUser(JSON.parse(localStorage.getItem('user')))
         try {
 
             const headers = {
