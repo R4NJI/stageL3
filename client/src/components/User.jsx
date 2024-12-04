@@ -35,10 +35,10 @@ function User() {
         setConfirm(false);
     }
 
-    const hanleOnConfirm = () => {
+    const handleOnConfirm = () => {
        
         // Logique pour modifier le client ici
-        axios.delete(`http://localhost:3001/api/file/${param}`)
+        axios.delete(`http://localhost:3001/api/users/${param}`)
          .then(res => {
              setShowModalSuccess(true);
          })
@@ -69,10 +69,9 @@ function User() {
         setModifUser(true);
     }
 
-    const handleShowConfirm = (numerofichier) => {
+    const handleShowConfirm = (iduser) => {
         setConfirm(true);
-        setParam(numerofichier);
-    
+        setParam(iduser);
     }
 
     // Fenêtre de réussite
@@ -121,7 +120,7 @@ function User() {
                     titre="Suppression d'un utilisateur"
                     message="Êtes-vous sûre de supprimer cet utilisateur?"
                     onClose={handleCloseConfirm}
-                    onConfirm={hanleOnConfirm}
+                    onConfirm={handleOnConfirm}
                     danger="ok"
                 />
                 < ModifLogin

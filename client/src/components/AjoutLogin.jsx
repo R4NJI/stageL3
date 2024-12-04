@@ -45,6 +45,7 @@ function AjoutLogin({ show, onClose }) {
             })
             .then(res => {
                 setShowModalSuccess(true);
+                setData({ username: '', password: '', droit: 'visiteur' });
             })
             .catch(err => {
                 console.error("Erreur lors de l'ajout de l'utilisateur:", err)
