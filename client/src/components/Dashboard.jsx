@@ -8,6 +8,9 @@ import { useLocation, Link } from "react-router-dom";
 import Piechart from "./Piechart";
 
 import '../Menu.css'
+import ic_view from '../images/ic_view.svg'
+
+import Recap from "./Recap";
 
 function Dashboard() {
     const scroll = {
@@ -105,8 +108,26 @@ function Dashboard() {
     },[data.moisFin]);
 
 
+    //modale recap
+    const [showRecap,setRecap] = useState(false);
+    const handleOnCloseRecap = () => {
+        setRecap(false);
+    }
+    
     return (
         <div style={scroll}>
+            <Recap
+                show={showRecap}
+                onClose={handleOnCloseRecap}
+                critere={data}
+                mois0={mois0}
+                recette={cumule}
+                recettecumulee={janvCumule}
+                prevision={somme_prevision}
+                previsioncumulee={previsionCumule}
+                recetteParMois={recetteParMois}
+                previsionParMois={prevParMois}
+            />
             <div className="d-flex flex-column p-3">
                 <div style={{fontSize:'25px'}} className="d-flex">
                     <div>Tableau de Bord</div>
@@ -116,7 +137,10 @@ function Dashboard() {
                     
                     <div className="d-flex flex-column " >
         
-                        <div style={{fontWeight:'20px'}}>Critère de recherche</div>
+                        <div className="d-flex" style={{fontWeight:'20px'}}>
+                            <div className="me-3">Critère de recherche</div> 
+                            <div style={{cursor:'pointer'}}><img src={ic_view} alt="icon view" onClick={()=>setRecap(true)}/></div>
+                        </div>
                         
                         <div className="d-flex justify-content-between mt-2 pt-3 pb-3" style={{borderTop:'2px solid rgb(232,232,234)',borderBottom:'2px solid rgb(232,232,234)',fontWeight:'bold',fontSize:'15px',fontFamily:'Roboto'}}>
                             <div className="d-flex">

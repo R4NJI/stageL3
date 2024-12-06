@@ -2,6 +2,9 @@ import { useState } from "react";
 import Centre from "./Centre";
 import { Link } from "react-router-dom";
 import Nature from "./Nature";
+import axios from "axios";
+import * as XLSX from "xlsx";
+import ic_export from '../images/ic_export.svg'
 
 function Table() {
     //objet à envoyer
@@ -47,6 +50,147 @@ function Table() {
         }
     }
 
+    const handleExportBureau = () => {
+        axios.post('http://localhost:3001/api/flux', data)
+        .then(response => {
+            const centres = response.data.centres;
+            const centresCumules = response.data.centresCumules;
+            const totalCentre = response.data.totalCentre;
+            const totalCentreCumule = response.data.totalCentreCumule;
+            const rows = [];
+
+            // Ajouter l'en-tête
+            rows.push([
+              "BUREAUX",
+              `PREVISION`,
+              `RECETTE`,
+              `TAUX DE REALISATION`,
+              "PREVISION CUMULEE",
+              "RECETTE CUMULEE",
+              "TAUX DE REALISATION CUMULE" ,
+            ]);
+        
+            // Ajouter les lignes des bureaux
+            centres.forEach((centre) => {
+              const cumul = centresCumules.find((cc) => cc.code === centre.code);
+              rows.push([
+                formatNumber(centre.bureaux),
+                formatNumber(centre.previsions),
+                formatNumber(centre.recettes),
+                ((parseFloat(centre.recettes) / parseFloat(centre.previsions)) * 100).toFixed(2) + " %",
+                formatNumber(cumul?.previsions || 0),
+                formatNumber(cumul?.recettes || 0),
+                cumul
+                  ? ((parseFloat(cumul.recettes) / parseFloat(cumul.previsions)) * 100).toFixed(2) + " %"
+                  : "",
+              ]);
+            });
+        
+            // Ajouter le total
+            rows.push([
+              "Total",
+              totalCentre ? formatNumber(totalCentre.previsions) : "",
+              totalCentre ? formatNumber(totalCentre.recettes) : "",
+              totalCentre
+                ? ((parseFloat(totalCentre.recettes) / parseFloat(totalCentre.previsions)) * 100).toFixed(2) + " %"
+                : "",
+              totalCentreCumule ? formatNumber(totalCentreCumule.previsions) : "",
+              totalCentreCumule ? formatNumber(totalCentreCumule.recettes) : "",
+              totalCentreCumule
+                ? ((parseFloat(totalCentreCumule.recettes) / parseFloat(totalCentreCumule.previsions)) * 100).toFixed(2) + " %"
+                : "",
+            ]);
+        
+            // Créer une feuille Excel
+            const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        
+            // Créer un classeur Excel
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, `Bilan des bureaux`);
+        
+            // Télécharger le fichier Excel
+            XLSX.writeFile(workbook, `bilan_bureau_du_${mois0[parseInt(data.mois,10)-1]}_${data.annee}.xlsx`);
+
+            
+        })
+        .catch(error => {
+          console.error('Erreur lors du filtre : ', error);
+        });
+    }
+
+    const handleExportImpot = () => {
+        axios.post('http://localhost:3001/api/flux', data)
+        .then(response => {
+          console.log('Résultats recues de lapi flux : ', response.data);
+            const natures = response.data.natures;
+            const naturesCumules = response.data.naturesCumules;
+            const totalNature = response.data.totalNature;
+            const totalNatureCumule = response.data.totalNatureCumule;
+
+        // Construire les données pour Excel
+        const rows = [];
+
+        // Ajouter l'en-tête
+        rows.push([
+        "NATURE",
+        `PREVISION`,
+        `RECETTE`,
+        `TAUX DE REALISATION`,
+        "PREVISION CUMULEE",
+        "RECETTE CUMULEE",
+        "TAUX DE REALISATION CUMULEE",
+        ]);
+
+        // Ajouter les lignes des données
+        natures.forEach((nature) => {
+        const cumule = naturesCumules.find((nc) => nc.num_imp === nature.num_imp);
+        rows.push([
+            nature.nature,
+            nature.previsions,
+            nature.recettes,
+            ((parseFloat(nature.recettes) / parseFloat(nature.previsions)) * 100).toFixed(2) + " %",
+            cumule?.previsions || "",
+            cumule?.recettes || "",
+            cumule
+            ? ((parseFloat(cumule.recettes) / parseFloat(cumule.previsions)) * 100).toFixed(2) + " %"
+            : "",
+        ]);
+        });
+
+        // Ajouter le pied de tableau (totaux)
+        rows.push([
+        "Total",
+        totalNature ? totalNature.previsions : "",
+        totalNature ? totalNature.recettes : "",
+        totalNature
+            ? ((parseFloat(totalNature.recettes) / parseFloat(totalNature.previsions)) * 100).toFixed(2) + " %"
+            : "",
+        totalNatureCumule ? totalNatureCumule.previsions : "",
+        totalNatureCumule ? totalNatureCumule.recettes : "",
+        totalNatureCumule
+            ? ((parseFloat(totalNatureCumule.recettes) / parseFloat(totalNatureCumule.previsions)) * 100).toFixed(2) + " %"
+            : "",
+        ]);
+
+        // Créer une feuille Excel
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+
+        // Créer un classeur Excel
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Données");
+
+        // Télécharger le fichier Excel
+        XLSX.writeFile(workbook, `bilan_impot_du_${mois0[parseInt(data.mois, 10) - 1]}_${data.annee}.xlsx`);
+
+
+        })
+        .catch(error => {
+          console.error('Erreur lors du filtre : ', error);
+        });
+    } 
+
+
+
     return (
         <div className="d-flex flex-column m-4 p-4" style={{backgroundColor:'white'}}>
             <div style={{textAlign:'center',fontWeight:'bold'}} className="mb-3">BILAN PAR { page==1 ? `BUREAU` : `IMPOT` } </div>
@@ -88,6 +232,10 @@ function Table() {
                                             <option value="2022">2022</option>
                                             <option value="2023">2023</option>
                     </select>
+                </div>
+
+                <div>
+                    <button type='button' className='btn btn-sm btn-secondary' onClick={page == 1 ? handleExportBureau : handleExportImpot }>Exporter <img src={ic_export} alt="icon export"/></button>
                 </div>
             </div>
 
