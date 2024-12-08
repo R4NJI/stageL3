@@ -11,7 +11,7 @@ function Recap({ show, onClose, critere , mois0, recette,prevision,recettecumule
     // Soumission du formulaire
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        alert("génération du récap en cours...")
+        // alert("Génération du rapport en cours...")
             // Création du document PDF
         const pdf = new jsPDF('p', 'mm', 'a4'); // Orientation Portrait, Unité millimètre, Taille A4
         const margin = 20;
@@ -125,6 +125,8 @@ function Recap({ show, onClose, critere , mois0, recette,prevision,recettecumule
 
             // Sauvegarder le fichier PDF
             pdf.save(`Rapport_${critere.annee}.pdf`);
+
+            onClose()
         
     }
 
@@ -161,7 +163,7 @@ function Recap({ show, onClose, critere , mois0, recette,prevision,recettecumule
                     </div>
                     <div className="d-flex justify-content-center">
                         <button type='button' className='btn btn-secondary me-3' onClick={onClose}>Annuler</button>
-                        <button type='submit' className='btn btn-info'>Générer</button>
+                        <button type='submit' className='btn btn-info'>Générer rapport</button>
                     </div>
                   
                 </form>
