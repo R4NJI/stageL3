@@ -6,7 +6,6 @@ const authenticateToken = require('./authenticateToken')
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-
 // Récupérer les informations de l'utilisateur
 router.get('/user', authenticateToken, async (req, res) => {
   try {
@@ -16,8 +15,6 @@ router.get('/user', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
-
-
 // Route pour la connexion
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -53,8 +50,7 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de la connexion' });
   }
 });
-
-//CRUD users
+//Route pour obtenir tous les utilisateurs
 router.get('/users', async (req, res) => {
   try {
     const utilisateurs = await pool.query('SELECT * FROM "NIFONLINE"."USER" ORDER BY id');
@@ -64,7 +60,7 @@ router.get('/users', async (req, res) => {
   }
 
 });
-
+//Route pour ajouter un nouveau utilisateur
 router.post('/users', async (req, res) => {
   try {
     const { username, password, droit } = req.body;
@@ -81,7 +77,7 @@ router.post('/users', async (req, res) => {
     res.status(500).json({ message: 'Erreur pour ajouter un utilisateur' });
   }
 });
-
+//Route pour modifier les inforomations d'un utilisateur
 router.put('/users', async (req, res) => {
   try {
     // Récupère l'ID de l'utilisateur depuis l'URL
@@ -118,7 +114,7 @@ router.put('/users', async (req, res) => {
   }
 
 });
-
+//Route pour supprimer un utilisateur
 router.delete('/users/:id', async (req, res) => {
   const { id } = req.params;
 

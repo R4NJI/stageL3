@@ -88,7 +88,7 @@ function Realisation({data,janvCumule,cumule,recetteParMois,prevParMois,rang,som
               
 
                 <div className="mt-3">Excédent</div>
-                <div>{formatNumber(cumule-somme_prevision)}</div>
+                <div>{formatNumber((cumule-somme_prevision).toFixed(2))}</div>
             </div>
         </div>
     )
